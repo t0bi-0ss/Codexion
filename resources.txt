@@ -1,0 +1,2 @@
+https://hpc-tutorials.llnl.gov/posix/
+https://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf
