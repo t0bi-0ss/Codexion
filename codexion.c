@@ -3,39 +3,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include "ft_atoi.c"
+#include "custom_structs.c"
+#include "routines.c"
 
 #define COMPILE_TIMES 10
 #define CODERS_NUM 10
-
-typedef struct {
-    long start_time;
-    long id;
-    long times_compiled;
-} thrds_properties;
-
-typedef struct {
-    long number_of_coders;
-    long time_to_burnout;
-    long time_to_compile;
-    long time_to_debug;
-    long time_to_refactor;
-    long number_of_compiles_required;
-    long dongle_cooldown;
-    char *scheduler;
-}
-
-pthread_mutex_t quantum_mutex;
-int can_compile = 0;
-int all_finished = 0;
-int terminate_all = 0;
-pthread_cond_t watchdog_cond;
-pthread_cond_t coders_cond;
-
-void compile(long id, int compilations);
-
-void debug(long id);
-
-void refactor(long id);
 
 void *coder(void *coder_id);
 
@@ -45,56 +18,46 @@ long time_since_start(long start_time);
 
 thrds_properties *init_properties(long start_time, long id);
 
-int main()
+void get_args(all_args *args_struct, char **argv);
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n);
+
+long time_at_start();
+
+void init_signals(signals *signals_pointer);
+
+void free_all(all_args *args, pthread_t **coders);
+
+int validate_args(int argc, char **argv);
+
+int main(int argc, char **argv)
 {
-    pthread_t coders[CODERS_NUM];
+    pthread_t **coders;
     pthread_t monitor;
-    struct timeval now;
     long    start_time;
     thrds_properties *start_values;
+    signals all_signals;
 
-    // Initialize mutexes
-    pthread_cond_init(&coders_cond, NULL);
-    pthread_mutex_init(&quantum_mutex, NULL);
-
-    // Get time at start
-    gettimeofday(&now, NULL);
-    start_time = now.tv_usec;
-
-    // Create threads
-    for (long i = 0; i < CODERS_NUM; i++)
+    if (validate_args(argc, argv))
+        return (1);
+    init_signals(&all_signals); // Initialize signals
+    coders = (pthread_t **) malloc(sizeof(pthread_t *) * CODERS_NUM); // Allocate memory for coders
+    if (!coders)
+        return (1);
+    start_time = time_at_start(); // Get time at start
+    for (long i = 0; i < CODERS_NUM; i++) // Create threads
     {
         start_values = init_properties(start_time, i);
         pthread_create(&coders[i], NULL, coder, (void *) start_values);
     }
     pthread_create(&monitor, NULL, watchdog, NULL);
-
-    // Wait for threads to finish
-    for (int i = 0; i < CODERS_NUM; i++)
+    for (int i = 0; i < CODERS_NUM; i++) // Wait for the threads to finish
         pthread_join(coders[i], NULL);
     pthread_join(monitor, NULL);
-
-    // Destroy variables
-    pthread_cond_destroy(&coders_cond);
-    pthread_mutex_destroy(&quantum_mutex);
+    pthread_cond_destroy(&all_signals->coders_cond); // Destroy variables
+    pthread_mutex_destroy(&all_signals->quantum_mutex);
     
     return (0);
-}
-
-void compile(long id, int compilations)
-{
-    printf("Coder n: %ld has compiled effectively for the %d time\n", id, compilations + 1);
-    usleep(100000);
-}
-
-void debug(long id)
-{
-    printf("Coder n: %ld is debugging\n", id);
-}
-
-void refactor(long id)
-{
-    printf("Coder n: %ld is refactoring\n", id);
 }
 
 void *watchdog(void *id)
@@ -169,3 +132,39 @@ long time_since_start(long start_time)
     
     return (diff);
 }
+
+void init_signals(signals *signals_pointer)
+{
+    pthread_mutex_init(&signals_pointer->quantum_mutex, NULL);
+    pthread_cond_init(&signals_pointer->watchdog_cond, NULL);
+    signals_pointer->can_compile = 0;
+    signals_pointer->all_finished = 0;
+    signals_pointer->terminate_all = 0;
+}
+
+long time_at_start()
+{
+    struct timeval now;
+
+    gettimeofday(&now, NULL);
+    return (now.tv_usec);
+}
+
+void free_all(all_args *args, pthread_t **coders)
+{
+    free(args);
+    free(coders);
+}
+
+int validate_args(int argc, char **argv)
+{
+    if (argc < 9)
+    {
+        printf("Args error: insufficient arguments\n");
+        return (1);
+    }
+
+    return (0);
+}
+
+
