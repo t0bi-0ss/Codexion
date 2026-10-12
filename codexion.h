@@ -1,5 +1,13 @@
-#include <pthread.h>
 
+#ifndef CODEXION_H
+# define CODEXION_H
+
+# include <pthread.h>
+# include <stddef.h>
+# include <stdint.h>
+# include <stdio.h>
+
+// CUSTOM STRUCTS
 typedef struct {
     long start_time;
     long id;
@@ -34,5 +42,19 @@ typedef struct {
     long time_to_refactor;
     long number_of_compiles_required;
     long dongle_cooldown;
-    int scheduler;
+    char *scheduler;
 } all_args;
+
+// ARGS HANDLING
+int validate_args(int argc, char **argv, all_args *args_struct);
+
+// ROUTINES
+void compile(long id, int compilations);
+void debug(long id);
+void refactor(long id);
+
+// THREADS
+void *thread_coder(void *coder_id);
+void *thread_watchdog(void *id);
+
+# endif

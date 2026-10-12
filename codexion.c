@@ -1,4 +1,4 @@
-#include <pthread.h>
+#include "codexion.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -10,25 +10,17 @@
 #define COMPILE_TIMES 10
 #define CODERS_NUM 10
 
-void *coder(void *coder_id);
-
-void *watchdog(void *id);
-
 long time_since_start(long start_time);
 
 thrds_properties *init_properties(long start_time, long id);
 
 void get_args(all_args *args_struct, char **argv);
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n);
-
 long time_at_start();
 
 void init_signals(signals *signals_pointer);
 
 void free_all(all_args *args, pthread_t **coders);
-
-int validate_args(int argc, char **argv);
 
 int main(int argc, char **argv)
 {
@@ -37,8 +29,9 @@ int main(int argc, char **argv)
     long    start_time;
     thrds_properties *start_values;
     signals all_signals;
+    all_args input_args;
 
-    if (validate_args(argc, argv))
+    if (validate_args(argc, argv, &input_args))
         return (1);
     init_signals(&all_signals); // Initialize signals
     coders = (pthread_t **) malloc(sizeof(pthread_t *) * CODERS_NUM); // Allocate memory for coders
@@ -48,64 +41,16 @@ int main(int argc, char **argv)
     for (long i = 0; i < CODERS_NUM; i++) // Create threads
     {
         start_values = init_properties(start_time, i);
-        pthread_create(&coders[i], NULL, coder, (void *) start_values);
+        pthread_create(&coders[i], NULL, thread_coder, (void *) start_values);
     }
-    pthread_create(&monitor, NULL, watchdog, NULL);
+    pthread_create(&monitor, NULL, thread_watchdog, NULL);
     for (int i = 0; i < CODERS_NUM; i++) // Wait for the threads to finish
         pthread_join(coders[i], NULL);
     pthread_join(monitor, NULL);
-    pthread_cond_destroy(&all_signals->coders_cond); // Destroy variables
-    pthread_mutex_destroy(&all_signals->quantum_mutex);
+    pthread_cond_destroy(&all_signals.coders_cond); // Destroy variables
+    pthread_mutex_destroy(&all_signals.quantum_mutex);
     
     return (0);
-}
-
-void *watchdog(void *id)
-{
-    while (all_finished < 10)
-    {
-        pthread_mutex_lock(&quantum_mutex);
-        while (can_compile)
-            if (pthread_cond_wait(&watchdog_cond, &quantum_mutex) != 0)
-            {
-                printf("Watchdog error: cond wait error");
-                terminate_all++;
-            }
-        if (!can_compile)
-            can_compile++;
-        pthread_mutex_unlock(&quantum_mutex);
-        pthread_cond_broadcast(&coders_cond);
-    }
-    printf("\nAll coders have compiled 10 times succesfully!\n");
-    return (NULL);
-}
-
-void *coder(void *properties)
-{
-    thrds_properties *start_values;
-
-    start_values = (thrds_properties *) properties;
-
-    while (start_values->times_compiled < COMPILE_TIMES)
-    {
-        pthread_mutex_lock(&quantum_mutex);
-        while (!can_compile)
-            if (pthread_cond_wait(&coders_cond, &quantum_mutex) != 0)
-            {
-                printf("Coder n: %ld has burnout\n", start_values->id);
-                terminate_all++;
-                free(properties);
-                pthread_exit(NULL);
-            }
-        can_compile--;
-        compile(start_values->id, start_values->times_compiled);
-        start_values->times_compiled++;
-        pthread_mutex_unlock(&quantum_mutex);
-        pthread_cond_signal(&watchdog_cond);
-    }
-    all_finished++;
-    free(properties);
-    return (NULL);
 }
 
 thrds_properties *init_properties(long start_time, long id)
@@ -155,16 +100,3 @@ void free_all(all_args *args, pthread_t **coders)
     free(args);
     free(coders);
 }
-
-int validate_args(int argc, char **argv)
-{
-    if (argc < 9)
-    {
-        printf("Args error: insufficient arguments\n");
-        return (1);
-    }
-
-    return (0);
-}
-
-
