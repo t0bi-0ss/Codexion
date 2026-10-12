@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include "ft_atoi.c"
-#include "custom_structs.c"
 #include "routines.c"
 
 #define COMPILE_TIMES 10
