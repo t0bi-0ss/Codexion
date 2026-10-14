@@ -51,9 +51,9 @@ static int allocate_for_coders_arr(pthread_t ***coders_arr, long coders_num)
     return (0);
 }
 
-static int allocate_for_properties_arr(thrds_properties ***properties_arr, long coders_num)
+static int allocate_for_properties_arr(thrds_properties_struct ***properties_arr, long coders_num)
 {
-    *properties_arr = (thrds_properties **) malloc(sizeof(thrds_properties) * (coders_num + 1));
+    *properties_arr = (thrds_properties_struct **) malloc(sizeof(thrds_properties_struct) * (coders_num + 1));
     if (!(*properties_arr))
     {
         fprintf(2, "Memory error: an error occured while allocating memory for properties array");
@@ -64,7 +64,7 @@ static int allocate_for_properties_arr(thrds_properties ***properties_arr, long 
     return (0);
 }
 
-static int start_all_threads(pthread_t **coders_arr, pthread_t *watchdog_ptr, thrds_properties **properties_arr, long coders_num)
+static int start_all_threads(pthread_t **coders_arr, pthread_t *watchdog_ptr, thrds_properties_struct **properties_arr, long coders_num)
 {
     if (allocate_for_coders_arr(&coders_arr, coders_num))
         return (1);
