@@ -1,12 +1,12 @@
 #include "codexion.h"
 
-static thrds_properties_struct *create_threads_properties_arr(long total_coders);
+static coder_properties_struct *create_threads_properties_arr(long total_coders);
 
-all_structs_handler *init_all_structs(int argc, char **argv)
+monitor_struct *init_all_structs(int argc, char **argv)
 {
-    all_structs_handler *all_structs;
+    monitor_struct *all_structs;
 
-    (all_structs) = (all_structs_handler *) malloc(sizeof(all_structs_handler));
+    (all_structs) = (monitor_struct *) malloc(sizeof(monitor_struct));
     if (!(all_structs))
         return (NULL);
     (all_structs)->all_args = get_and_validate_args(argc, argv);
@@ -29,11 +29,11 @@ all_structs_handler *init_all_structs(int argc, char **argv)
     return (all_structs);
 }
 
-static thrds_properties_struct *create_threads_properties_arr(long total_coders)
+static coder_properties_struct *create_threads_properties_arr(long total_coders)
 {
-    thrds_properties_struct *threads_properties_arr;
+    coder_properties_struct *threads_properties_arr;
 
-    threads_properties_arr = (thrds_properties_struct *) malloc(sizeof(thrds_properties_struct) * total_coders);
+    threads_properties_arr = (coder_properties_struct *) malloc(sizeof(coder_properties_struct) * total_coders);
     if (!threads_properties_arr)
         return (NULL);
     

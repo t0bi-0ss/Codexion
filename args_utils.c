@@ -1,7 +1,7 @@
 #include "codexion.h"
 #include <string.h>
 
-static int get_args(args_struct *all_args, char **argv)
+static int get_args(config_struct *all_args, char **argv)
 {
     if (strncmp("fifo", argv[8], 5) == 0)
         all_args->scheduler = 1;
@@ -23,11 +23,11 @@ static int get_args(args_struct *all_args, char **argv)
     return (0);
 }
 
-args_struct *get_and_validate_args(int argc, char **argv)
+config_struct *get_and_validate_args(int argc, char **argv)
 {
-    args_struct *all_args;
+    config_struct *all_args;
 
-    all_args = (args_struct *) malloc(sizeof(args_struct));
+    all_args = (config_struct *) malloc(sizeof(config_struct));
     if (argc < 9)
     {
         printf("Args error: insufficient arguments\n");

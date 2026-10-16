@@ -10,17 +10,17 @@
 
 long time_since_start(long start_time);
 
-thrds_properties_struct *init_properties(long start_time, long id);
+coder_properties_struct *init_properties(long start_time, long id);
 
-void get_args(args_struct *args_struct, char **argv);
+void get_args(config_struct *config_struct, char **argv);
 
 long time_at_start();
 
-void free_all(args_struct *args, pthread_t **coders);
+void free_all(config_struct *args, pthread_t **coders);
 
 int main(int argc, char **argv)
 {
-    all_structs_handler *structs_handler;
+    monitor_struct *structs_handler;
     long    start_time;
 
     start_time = time_at_start(); // Get time at start
@@ -42,11 +42,11 @@ int main(int argc, char **argv)
     return (0);
 }
 
-thrds_properties_struct *init_properties(long start_time, long id)
+coder_properties_struct *init_properties(long start_time, long id)
 {
-    thrds_properties_struct *element;
+    coder_properties_struct *element;
 
-    element = (thrds_properties_struct *) malloc(sizeof(thrds_properties_struct));
+    element = (coder_properties_struct *) malloc(sizeof(coder_properties_struct));
     if (!element)
         return (NULL);
     element->id = id;
@@ -75,7 +75,7 @@ long time_at_start()
     return (now.tv_usec);
 }
 
-void free_all(args_struct *args, pthread_t **coders)
+void free_all(config_struct *args, pthread_t **coders)
 {
     free(args);
     free(coders);

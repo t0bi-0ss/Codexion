@@ -6,7 +6,7 @@
 /*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 18:21:29 by tsordo-o          #+#    #+#             */
-/*   Updated: 2026/10/12 18:56:26 by tsordo-o         ###   ########.fr       */
+/*   Updated: 2026/10/16 15:34:41 by tsordo-o         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ static int allocate_for_coders_arr(pthread_t ***coders_arr, long coders_num)
     return (0);
 }
 
-static int allocate_for_properties_arr(thrds_properties_struct ***properties_arr, long coders_num)
+static int allocate_for_properties_arr(coder_properties_struct ***properties_arr, long coders_num)
 {
-    *properties_arr = (thrds_properties_struct **) malloc(sizeof(thrds_properties_struct) * (coders_num + 1));
+    *properties_arr = (coder_properties_struct **) malloc(sizeof(coder_properties_struct) * (coders_num + 1));
     if (!(*properties_arr))
     {
         fprintf(2, "Memory error: an error occured while allocating memory for properties array");
@@ -64,7 +64,7 @@ static int allocate_for_properties_arr(thrds_properties_struct ***properties_arr
     return (0);
 }
 
-static int start_all_threads(pthread_t **coders_arr, pthread_t *watchdog_ptr, thrds_properties_struct **properties_arr, long coders_num)
+static int start_all_threads(pthread_t **coders_arr, pthread_t *watchdog_ptr, coder_properties_struct **properties_arr, long coders_num)
 {
     if (allocate_for_coders_arr(&coders_arr, coders_num))
         return (1);

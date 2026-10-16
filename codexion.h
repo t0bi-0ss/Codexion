@@ -6,7 +6,7 @@
 /*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 17:47:23 by tsordo-o          #+#    #+#             */
-/*   Updated: 2026/10/12 18:06:59 by tsordo-o         ###   ########.fr       */
+/*   Updated: 2026/10/16 15:40:52 by tsordo-o         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,11 @@
 typedef struct {
     long id;
     long times_compiled;
-    args_struct *all_args;
-} thrds_properties_struct;
+    config_struct *config;
+    dongle_struct *first_dongle;
+    dongle_struct *second_dongle;
+    pthread_cond_t cond_wakeup_coder;
+} coder_properties_struct;
 
 typedef struct {
     pthread_mutex_t quantum_mutex;
@@ -45,13 +48,23 @@ typedef struct {
     long number_of_compiles_required;
     long dongle_cooldown;
     char *scheduler;
-} args_struct;
+} config_struct;
 
 typedef struct {
-    args_struct *all_args;
+    int id;
+    int is_available;
+    long last_time_used;
+    pthread_mutex_t dongle_mutex;
+    pthread_cond_t dongle_cond;
+} dongle_struct;
+
+typedef struct {
+    config_struct *all_args;
     signals_struct *signals;
-    thrds_properties_struct *threads_properties_arr;
-} all_structs_handler;
+    coder_properties_struct *threads_properties_arr;
+    int terminate_all;
+    int all_finished;
+} monitor_struct;
 
 // ARGS HANDLING
 int get_and_validate_args(int argc, char **argv);
@@ -69,6 +82,6 @@ void *thread_coder(void *coder_id);
 void *thread_watchdog(void *id);
 
 // ALL STRUCTS HANDLER
-all_structs_handler *init_all_structs(int argc, char **argv);
+monitor_struct *init_all_structs(int argc, char **argv);
 
 # endif

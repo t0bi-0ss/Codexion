@@ -2,9 +2,9 @@
 
 void *thread_coder(void *properties)
 {
-    thrds_properties_struct *start_values;
+    coder_properties_struct *start_values;
 
-    start_values = (thrds_properties_struct *) properties;
+    start_values = (coder_properties_struct *) properties;
 
     while (start_values->times_compiled < COMPILE_TIMES)
     {
