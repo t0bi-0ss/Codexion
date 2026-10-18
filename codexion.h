@@ -22,6 +22,9 @@
 typedef struct {
     long id;
     long times_compiled;
+    int burned_out;
+    int terminate;
+    int finished_compiling;
     config_struct *config;
     dongle_struct *first_dongle;
     dongle_struct *second_dongle;
