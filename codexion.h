@@ -17,21 +17,20 @@
 # include <stddef.h>
 # include <stdint.h>
 # include <stdio.h>
+# include <string.h>
 
 // CUSTOM STRUCTS
 typedef struct {
     long id;
     long times_compiled;
-    int burned_out;
-    int terminate;
-    int finished_compiling;
+    pthread_cond_t  wake_coder;
     config_struct *config;
     dongle_struct *first_dongle;
     dongle_struct *second_dongle;
 } coder_properties_struct;
 
 typedef struct {
-    long number_of_coders;
+    int number_of_coders;
     long time_to_burnout;
     long time_to_compile;
     long time_to_debug;
@@ -46,23 +45,30 @@ typedef struct {
     int is_available;
     long last_time_used;
     long dongle_cooldown;
+    coder_properties_struct queue[2];
     pthread_mutex_t dongle_mutex;
-    pthread_cond_t dongle_cond;
 } dongle_struct;
 
 typedef struct {
-    config_struct   *loaded_config;
+    config_struct   loaded_config;
     pthread_t *coder_threads_arr;
     coder_properties_struct *coder_properties_arr;
     dongle_struct   *dongles_arr;
-    coder_properties_struct *threads_properties_arr;
     int terminate_all;
     int all_finished;
     long start_time;
+    pthread_mutex_t mutex_stdout;
 } monitor_struct;
 
 // ARGS HANDLING
-int get_and_validate_args(int argc, char **argv);
+int get_and_validate_args(int argc, char **argv, monitor_struct *structs_handler);
+
+// MEMORY MANAGEMENT
+void    free_memory(monitor_struct *simulation_monitor);
+int allocate_memory(monitor_struct *simulation_monitor_ptr, long number_of_coders);
+
+// SIMULATION
+int start_simulation(monitor_struct *simulation_monitor);
 
 // ROUTINES
 void compile(long id, int compilations);

@@ -10,50 +10,25 @@
 
 long time_since_start(long start_time);
 
-coder_properties_struct *init_properties(long start_time, long id);
-
 void get_args(config_struct *config_struct, char **argv);
 
 long time_at_start();
 
-void free_all(config_struct *args, pthread_t **coders);
 
 int main(int argc, char **argv)
 {
-    monitor_struct *structs_handler;
+    monitor_struct  simulation_monitor;
     long    start_time;
 
     start_time = time_at_start(); // Get time at start
+    if (get_and_validate_args(argc, argv, &simulation_monitor)) // Load config
+        return (1);
+    if (allocate_memory(&simulation_monitor, simulation_monitor.loaded_config.number_of_coders))
+        return (2);
+    simulation_monitor.start_time = start_time;
     
-    return (0);
-}
-
-int allocate_memory(monitor_struct *simulation_monitor_ptr, long number_of_coders)
-{
-    simulation_monitor_ptr->coder_threads_arr = malloc(sizeof(pthread_t) * number_of_coders);
-    if (!simulation_monitor_ptr->coder_threads_arr)
-        return (1);
-    simulation_monitor_ptr->coder_properties_arr = malloc(sizeof(coder_properties_struct) * number_of_coders);
-    if (!simulation_monitor_ptr->coder_properties_arr)
-    {
-        free(simulation_monitor_ptr->coder_threads_arr);
-        return (1);
-    }
-    simulation_monitor_ptr->dongles_arr = malloc(sizeof(dongle_struct) * number_of_coders);
-    if (!simulation_monitor_ptr->dongles_arr)
-    {
-        free(simulation_monitor_ptr->coder_threads_arr);
-        free(simulation_monitor_ptr->coder_properties_arr);
-        return (1);
-    }
-    simulation_monitor_ptr->threads_properties_arr = malloc(sizeof(coder_properties_struct) * number_of_coders);
-    if (!simulation_monitor_ptr->threads_properties_arr)
-    {
-        free(simulation_monitor_ptr->coder_threads_arr);
-        free(simulation_monitor_ptr->coder_properties_arr);
-        free(simulation_monitor_ptr->threads_properties_arr);
-        return (1);
-    }
+    free_memory(&simulation_monitor);
+    
     return (0);
 }
 
@@ -129,10 +104,4 @@ long time_at_start()
 
     gettimeofday(&now, NULL);
     return (now.tv_usec);
-}
-
-void free_all(config_struct *args, pthread_t **coders)
-{
-    free(args);
-    free(coders);
 }

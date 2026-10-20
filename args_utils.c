@@ -1,5 +1,4 @@
 #include "codexion.h"
-#include <string.h>
 
 static int get_args(config_struct *all_args, char **argv)
 {
@@ -23,18 +22,14 @@ static int get_args(config_struct *all_args, char **argv)
     return (0);
 }
 
-config_struct *get_and_validate_args(int argc, char **argv)
+int get_and_validate_args(int argc, char **argv, monitor_struct *structs_handler)
 {
-    config_struct *all_args;
-
-    all_args = (config_struct *) malloc(sizeof(config_struct));
     if (argc < 9)
     {
         printf("Args error: insufficient arguments\n");
-        return (NULL);
+        return (1);
     }
-	if (get_args(all_args, argv))
-		return (NULL);
-
-    return (all_args);
+	if (get_args(&structs_handler->loaded_config, argv))
+		return (2);
+    return (0);
 }
