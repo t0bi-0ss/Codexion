@@ -105,3 +105,11 @@ long time_at_start()
     gettimeofday(&now, NULL);
     return (now.tv_usec);
 }
+
+struct timeval get_time()
+{
+    struct timeval now;
+
+    gettimeofday(&now, NULL);
+    return (now);
+}

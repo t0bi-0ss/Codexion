@@ -18,11 +18,13 @@
 # include <stdint.h>
 # include <stdio.h>
 # include <string.h>
+# include <sys/time.h>
 
 // CUSTOM STRUCTS
 typedef struct {
     long id;
     long times_compiled;
+    struct timespec time_to_burnout;
     pthread_cond_t  wake_coder;
     config_struct *config;
     dongle_struct *first_dongle;
