@@ -6,7 +6,7 @@
 /*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 17:47:23 by tsordo-o          #+#    #+#             */
-/*   Updated: 2026/10/19 17:21:59 by tsordo-o         ###   ########.fr       */
+/*   Updated: 2026/10/22 17:05:39 by tsordo-o         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct {
     int is_available;
     long last_time_used;
     long dongle_cooldown;
-    coder_properties_struct queue[2];
+    coder_properties_struct *queue[2];
     pthread_mutex_t dongle_mutex;
 } dongle_struct;
 
@@ -68,6 +68,9 @@ int get_and_validate_args(int argc, char **argv, monitor_struct *structs_handler
 // MEMORY MANAGEMENT
 void    free_memory(monitor_struct *simulation_monitor);
 int allocate_memory(monitor_struct *simulation_monitor_ptr, long number_of_coders);
+
+// TIME UTILS
+struct timespec get_timespec();
 
 // SIMULATION
 int start_simulation(monitor_struct *simulation_monitor);

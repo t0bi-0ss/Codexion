@@ -1,21 +1,10 @@
 #include "codexion.h"
 
-struct timespec set_timespec()
-{
-    struct timeval now;
-    struct timespec updated;
-
-    gettimeofday(&now, NULL);
-    updated.tv_sec = now.tv_sec;
-    updated.tv_nsec = now.tv_usec;
-    return (updated);
-}
-
 void update_time_to_burnout(long burnout_time, struct timespec *time_to_burnout)
 {
 	struct timespec current_time;
 	
-    current_time = set_timespec();
+    current_time = get_timespec();
     time_to_burnout->tv_sec = current_time.tv_sec + burnout_time / 1000;
     time_to_burnout->tv_nsec = current_time.tv_nsec;
 }
