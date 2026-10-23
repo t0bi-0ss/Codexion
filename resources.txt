@@ -2,3 +2,5 @@ https://hpc-tutorials.llnl.gov/posix/
 https://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf
 https://en.wikipedia.org/wiki/Dining_philosophers_problem
 https://pubs.opengroup.org/onlinepubs/009604599/functions/pthread_cond_timedwait.html   
+https://en.wikipedia.org/wiki/Priority_queue
+https://www.geeksforgeeks.org/c/c-program-to-implement-priority-queue/
