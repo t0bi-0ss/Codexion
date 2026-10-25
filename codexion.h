@@ -43,25 +43,23 @@ typedef struct {
 } config_struct;
 
 typedef struct {
+    struct timespec *time_stamp;
+    pthread_cond_t  *wake_coder;
+} heap_request;
+
+typedef struct {
+    int size;
+    int capacity;
+    heap_request   requests[3];
+    pthread_mutex_t mutex_queue;
+} heap;
+
+typedef struct {
     struct timespec available_time;
     long dongle_cooldown;
     heap    queue;
     pthread_mutex_t dongle_mutex;
 } dongle_struct;
-
-typedef struct {
-    int priority;
-    struct timespec *burnout_time;
-    pthread_cond_t  *wake_coder;
-    heap_node   *previous;
-    heap_node   *next;
-} heap_node;
-
-typedef struct {
-    int size;
-    heap_node   *head;
-    pthread_mutex_t mutex_queue;
-} heap;
 
 typedef struct {
     config_struct   loaded_config;
@@ -83,24 +81,9 @@ int allocate_memory(monitor_struct *simulation_monitor_ptr, long number_of_coder
 
 // HEAP
 
-// MAIN UTILS
-heap_node *new_request(struct timespec *burnout_time, pthread_cond_t *wake_coder);
-void    add_request(heap *queue, heap_node *new_request, char *scheduler);
-int    make_requests(coder_properties_struct *self_properties);
-
 // MANAGEMENT
-void    reset_priority(heap *queue);
-int timespec_min(struct timespec *curr_min, struct timespec *candidate);
-int is_disordered(heap *queue);
-void    assign_priority(heap *queue);
-void    insert_last(heap *queue, heap_node *new_node);
-heap_node *new_node();
-void    swap_nodes(heap_node *first_node, heap_node *second_node);
-void    bubble_sort(heap *queue);
-
-// INSERT METHODS
-void    insert_edf(heap *queue, heap_node *new_request);
-void    insert_fifo(heap *queue, heap_node *new_request);
+void    swap(heap_request *child_request, heap_request *parent_request);
+void    sift_up(heap *queue, int index);
 
 // TIME UTILS
 struct timespec get_timespec();

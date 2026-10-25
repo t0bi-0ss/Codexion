@@ -1,0 +1,3 @@
+even though I'm aware that queues will have a maximum of two requests, since 
+a dongle is only reachable by two coders, I decided to write every heap
+related function as if sometime the necessity of having more could arise.
