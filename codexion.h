@@ -6,7 +6,7 @@
 /*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 17:47:23 by tsordo-o          #+#    #+#             */
-/*   Updated: 2026/10/22 17:05:39 by tsordo-o         ###   ########.fr       */
+/*   Updated: 2026/10/26 18:14:01 by tsordo-o         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,20 @@
 
 // CUSTOM STRUCTS
 typedef struct {
-    long id;
-    long times_compiled;
-    struct timespec time_to_burnout;
+    long    id;
+    long    times_compiled;
+    long    req_compiles;
+    int stop;
+    int has_permission;
+    struct  timespec last_compile;
+    struct timespec to_burnout;
+    pthread_mutex_t coder_mutex;
     pthread_cond_t  wake_coder;
-    config_struct *config;
     dongle_struct *first_dongle;
     dongle_struct *second_dongle;
+    pthread_mutex_t *stdout_mutex_ptr;
+    pthread_cond_t  *monitor_condvar_ptr;
+    pthread_mutex_t *shared_mutex_ptr;
 } coder_properties_struct;
 
 typedef struct {
@@ -55,9 +62,9 @@ typedef struct {
 } heap;
 
 typedef struct {
-    struct timespec available_time;
-    long dongle_cooldown;
-    heap    queue;
+    int is_held;
+    int is_wanted;
+    struct timespec cooldown_end;
     pthread_mutex_t dongle_mutex;
 } dongle_struct;
 
@@ -69,7 +76,11 @@ typedef struct {
     int terminate_all;
     int all_finished;
     long start_time;
+    struct timespec earliest_cooldown;
+    struct timespec earliest_burnout;
+    pthread_mutex_t   shared_mutex;
     pthread_mutex_t mutex_stdout;
+    pthread_cond_t  wake_monitor;
 } monitor_struct;
 
 // ARGS HANDLING

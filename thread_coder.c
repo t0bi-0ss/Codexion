@@ -1,24 +1,38 @@
 #include "codexion.h"
 
-void update_time_to_burnout(long burnout_time, struct timespec *time_to_burnout)
+int check_stop(void *properties)
 {
-	struct timespec current_time;
-	
-    current_time = get_timespec();
-    time_to_burnout->tv_sec = current_time.tv_sec + burnout_time / 1000;
-    time_to_burnout->tv_nsec = current_time.tv_nsec;
+    int stop_copy;
+    coder_properties_struct *coder;
+
+    coder = (coder_properties_struct *) properties;
+    if (pthread_mutex_lock(&coder->coder_mutex))
+    {
+        fprintf(stderr, "Unable to lock coder mutex");
+        return (1);
+    }
+    stop_copy = coder->stop;
+    pthread_mutex_unlock(&coder->coder_mutex);
+    return (stop_copy);
 }
 
 void *thread_coder(void *properties)
 {
-    coder_properties_struct *start_values;
+    coder_properties_struct *coder_p;
 
-    start_values = (coder_properties_struct *) properties;
-    update_time_to_burnout(start_values->config->time_to_burnout, &start_values->time_to_burnout);
-    while (start_values->times_compiled < start_values->config->number_of_compiles_required)
+    coder_p = (coder_properties_struct *) properties;
+    while (coder_p->times_compiled < coder_p->req_compiles)
     {
-
+        pthread_mutex_lock(coder_p->shared_mutex_ptr);
+        // make request
+        coder_p->has_permission = 0;
+        pthread_cond_signal(coder_p->monitor_condvar_ptr);
+        while (!coder_p->has_permission && !check_stop(properties))
+            pthread_cond_wait(&coder_p->wake_coder, coder_p->shared_mutex_ptr);
+        pthread_mutex_unlock(coder_p->shared_mutex_ptr);
+        if (check_stop(properties))
+            break ;
+        
     }
-    free(properties);
     return (NULL);
 }
