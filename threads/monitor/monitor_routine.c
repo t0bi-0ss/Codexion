@@ -1,7 +1,5 @@
 #include "../../codexion.h"
 
-static int  check_requests(monitor_struct *monitor_p);
-
 void    monitor_routine(void *properties)
 {
     monitor_struct *monitor_p;
@@ -28,20 +26,3 @@ void    monitor_routine(void *properties)
             // signal coder
     }
 }
-
-static int  check_requests(monitor_struct *monitor_p)
-{
-    int i;
-    int dongle_1_index;
-    int dongle_2_index;
-
-    i = 0;
-    while (i <= monitor_p->min_heap->size)
-    {
-        dongle_1_index = monitor_p->min_heap->requests[i].coder->dongle_1_index;
-        dongle_2_index = monitor_p->min_heap->requests[i].coder->dongle_2_index;
-        if (!monitor_p->dongles_arr[dongle_1_index].is_held &&
-        !monitor_p->dongles_arr[dongle_2_index].is_held)
-    }
-}
-

@@ -1,4 +1,4 @@
-#include "codexion.h"
+#include "../../../codexion.h"
 
 int burnout_check(struct timespec burnout_time)
 {
