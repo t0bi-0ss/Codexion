@@ -1,15 +1,13 @@
 #include "codexion.h"
 
-int burnout_check(struct timespec compilation_last_time, long burnout_time)
+int burnout_check(struct timespec burnout_time)
 {
     struct timespec now;
-    long compilation_total_time;
-    long current_total_time;
 
     now = get_timestamp();
-    compilation_total_time = compilation_last_time.tv_sec * 1000 + compilation_last_time.tv_nsec / 1000;
-    current_total_time = now.tv_sec * 1000 + now.tv_nsec / 1000;
-    if (burnout_time <= current_total_time - compilation_total_time)
+    if (burnout_time.tv_sec < now.tv_sec)
+        return (1);
+    if (burnout_time.tv_sec == now.tv_sec && burnout_time.tv_nsec < now.tv_nsec)
         return (1);
     return (0);
 }

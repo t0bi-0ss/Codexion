@@ -32,6 +32,17 @@ typedef enum coder_actions {
 
 // CUSTOM STRUCTS
 typedef struct {
+    int number_of_coders;
+    long time_to_burnout;
+    useconds_t time_to_compile;
+    useconds_t time_to_debug;
+    useconds_t time_to_refactor;
+    long compiles_required;
+    long dongle_cooldown;
+    Scheduler   scheduler_config;
+} config_struct;
+
+typedef struct {
     long    id;
     long    times_compiled;
     int stop;
@@ -44,17 +55,6 @@ typedef struct {
     int dongle_2_index;
     monitor_struct  *monitor_ptr;
 } coder_properties_struct;
-
-typedef struct {
-    int number_of_coders;
-    long time_to_burnout;
-    useconds_t time_to_compile;
-    useconds_t time_to_debug;
-    useconds_t time_to_refactor;
-    long compiles_required;
-    long dongle_cooldown;
-    Scheduler   scheduler_config;
-} config_struct;
 
 typedef struct {
     struct timespec timeof_request;
@@ -80,7 +80,6 @@ typedef struct {
     coder_properties_struct *coder_properties_arr;
     dongle_struct   *dongles_arr;
     heap    *min_heap;
-    int terminate_all;
     int have_finished;
     struct timespec start_time;
     struct timespec earliest_cooldown;
