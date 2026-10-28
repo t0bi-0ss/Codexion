@@ -1,10 +1,10 @@
 #include "../../codexion.h"
 
-void    swap(heap_request *child_request, heap_request *parent_request)
+void    swap(heap_request *req_1, heap_request *req_2)
 {
     heap_request    tmp;
 
-    tmp = *child_request;
-    *child_request = *parent_request;
-    *parent_request = tmp;
+    tmp = *req_1;
+    *req_1 = *req_2;
+    *req_2 = tmp;
 }

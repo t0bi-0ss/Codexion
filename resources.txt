@@ -4,3 +4,6 @@ https://en.wikipedia.org/wiki/Dining_philosophers_problem
 https://pubs.opengroup.org/onlinepubs/009604599/functions/pthread_cond_timedwait.html   
 https://en.wikipedia.org/wiki/Priority_queue
 https://www.geeksforgeeks.org/c/c-program-to-implement-priority-queue/
+https://www.geeksforgeeks.org/c/function-pointer-in-c/
+https://medium.com/@alexey.medvecky/mastering-heaps-from-c-simplicity-to-custom-c-implementation-that-powers-efficient-algorithms-27ff2938ecaa
+https://jraleman.medium.com/c-programming-language-passing-a-function-as-a-parameter-90d52fe842ea

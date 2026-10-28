@@ -1,6 +1,6 @@
 #include "codexion.h"
 
-struct timespec get_timespec()
+struct timespec get_timestamp()
 {
     struct timeval now;
     struct timespec updated;
@@ -11,27 +11,26 @@ struct timespec get_timespec()
     return (updated);
 }
 
-int timespec_min(struct timespec *curr_min, struct timespec *candidate)
+// Returns 1 if first_stamp occurs sooner than second_stamp
+int timespec_cmp(struct timespec *first_stamp, struct timespec *second_stamp)
 {
-    long curr_min_total;
-    long candidate_total;
+    long first_stamp_total;
+    long second_stamp_total;
 
-    if (!candidate)
+    if (!second_stamp)
         return (-1);
-    if (!curr_min)
+    if (!first_stamp)
         return (1);
-    curr_min_total = curr_min->tv_nsec / 1000 + curr_min->tv_sec * 1000;
-    candidate_total = candidate->tv_nsec / 1000 + candidate->tv_sec * 1000;
-    if (candidate_total < curr_min_total)
-        return (1);
-    return (0);
+    first_stamp_total = first_stamp->tv_nsec / 1000 + first_stamp->tv_sec * 1000;
+    second_stamp_total = second_stamp->tv_nsec / 1000 + second_stamp->tv_sec * 1000;
+    return (second_stamp_total > first_stamp_total);
 }
 
 void update_time_to_burnout(long burnout_time, struct timespec *time_to_burnout)
 {
 	struct timespec current_time;
 	
-    current_time = get_timespec();
+    current_time = get_timestamp();
     time_to_burnout->tv_sec = current_time.tv_sec + burnout_time / 1000;
     time_to_burnout->tv_nsec = current_time.tv_nsec;
 }

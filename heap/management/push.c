@@ -1,12 +1,12 @@
 #include "../../codexion.h"
 
-void    add_request(heap *queue, heap_request new_request)
+void    push(heap *p_queue, heap_request new_request)
 {
-    if (queue->size >= queue->capacity)
+    if (p_queue->size >= p_queue->capacity)
     {
         fprintf(stderr, "Heap overflow!\n");
         return ;
     }
-    queue->requests[++queue->size] = new_request;
-    
+    p_queue->requests[++p_queue->size] = new_request;
+    sift_up(p_queue, p_queue->size);
 }
