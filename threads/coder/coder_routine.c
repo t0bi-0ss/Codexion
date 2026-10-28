@@ -8,12 +8,13 @@ void *coder_routine(void *properties)
     coder_properties_struct *coder_p;
 
     coder_p = (coder_properties_struct *) properties;
-    while (coder_p->times_compiled < coder_p->monitor_ptr->loaded_config->compiles_required)
+    while (1)
     {
+        pthread_mutex_lock(coder_p->monitor_ptr->shared_mutex);
         add_request(coder_p);
         coder_p->has_permission = 0;
         pthread_cond_signal(coder_p->monitor_ptr->wake_monitor);
-        while (!coder_p->has_permission && !check_stop(properties))
+        while (!coder_p->has_permission && !coder_p->stop)
             pthread_cond_wait(&coder_p->wake_coder, &coder_p->monitor_ptr->shared_mutex);
         pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
         if (check_stop(properties))
@@ -35,9 +36,7 @@ static int check_stop(void *properties)
     coder_properties_struct *coder;
 
     coder = (coder_properties_struct *) properties;
-    pthread_mutex_lock(&coder->coder_mutex);
     stop_copy = coder->stop;
-    pthread_mutex_unlock(&coder->coder_mutex);
     return (stop_copy);
 }
 

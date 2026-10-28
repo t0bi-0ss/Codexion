@@ -6,20 +6,21 @@
 /*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/12 17:47:23 by tsordo-o          #+#    #+#             */
-/*   Updated: 2026/10/26 18:14:01 by tsordo-o         ###   ########.fr       */
+/*   Updated: 2026/10/28 18:40:44 by tsordo-o         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
 
-# include <pthread.h>
-# include <stddef.h>
-# include <stdint.h>
-# include <stdio.h>
-# include <string.h>
-# include <sys/time.h>
-# include <unistd.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pthread.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/time.h>
 
 // ENUMS
 typedef enum scheduler {
@@ -123,9 +124,16 @@ int start_simulation(monitor_struct *simulation_monitor);
 
 // ROUTINES
 
-// ROUTINES UTILS
+// CODER ROUTINE UTILS
 void update_time_to_burnout(long burnout_time, struct timespec *time_to_burnout);
 void    update_both_dongles(coder_properties_struct *coder_p);
+
+// MONITOR ROUTINE UTILS
+int burnout_check(struct timespec burnout_time);
+int cooldown_check(struct timespec cooldown_time);
+int check_compilations_num(heap_request *request, config_struct *loaded_config);
+void    stop_wake_all(coder_properties_struct *coders_arr, config_struct *loaded_config);
+int  handle_request(dongle_struct *dongles_arr, heap_request *request, int request_index);
 
 // ALL STRUCTS HANDLER
 monitor_struct *init_all_structs(int argc, char **argv);
