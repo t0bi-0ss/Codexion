@@ -21,6 +21,7 @@ void    update_both_dongles(coder_properties_struct *coder_p)
 void static    update_dongle(dongle_struct *dongle_ptr, long dongle_cooldown)
 {
     dongle_ptr->is_held = 0;
+    dongle_ptr->in_cd = 1;
     update_cooldown(dongle_cooldown, &dongle_ptr->cooldown_end);
 }
 

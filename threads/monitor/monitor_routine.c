@@ -1,8 +1,8 @@
 #include "../../codexion.h"
 
-static struct timespec  earliest_dead_line(heap *p_queue);
+static void    finish_routine(monitor_struct *monitor_p);
 
-void    monitor_routine(void *properties)
+void    *monitor_routine(void *properties)
 {
     int i;
     monitor_struct *monitor_p;
@@ -14,44 +14,32 @@ void    monitor_routine(void *properties)
         i = 1;
         while (i <= monitor_p->min_heap->size)
         {
+            if (check_compilations_num(monitor_p, &i))
+                continue;
             if (monitor_p->have_finished == monitor_p->loaded_config.number_of_coders)
-                return ((void) pthread_mutex_unlock(&monitor_p->shared_mutex));
-            if (check_compilations_num(&monitor_p->min_heap->requests[i], &monitor_p->loaded_config))
-            {
-                monitor_p->min_heap->requests[i].coder->stop = 1;
-                pop_at(monitor_p->min_heap, i);
-            }
-            else if (burnout_check(monitor_p->min_heap->requests[i].coder->to_burnout))
-                stop_wake_all(monitor_p->coder_threads_arr, &monitor_p->loaded_config);
-            else if (handle_request(monitor_p->dongles_arr,
-                &monitor_p->min_heap->requests[i], i))
-                pop_at(monitor_p->min_heap, i);
+                return (pthread_mutex_unlock(&monitor_p->shared_mutex), NULL);
+            if (burnout_check(monitor_p, i))
+                return (stop_wake_all(monitor_p->coder_properties_arr,
+                    &monitor_p->loaded_config, &monitor_p->shared_mutex), NULL);
+            else if (handle_request(monitor_p,
+                &monitor_p->min_heap->requests[i], &i))
+                continue;
             i++;
         }
-        pthread_cond_timedwait(&monitor_p->wake_monitor, &monitor_p->shared_mutex)
-        // check requests
-            // check requester's burnout
-                // if burnout detected
-                    // stop all coders
-                    // wake them all
-            // check compilation times
-                // if max reached set coder's stop flag
-                // increment own have_finished counter
-                // continue to signal coder
-            // check if dongles are available
-                // if NOT mark them as requested
-            // if available mark them as HELD
-            // set coder's permission flag
-            // signal coder
+        finish_routine(monitor_p);
+        pthread_cond_timedwait(&monitor_p->wake_monitor, &monitor_p->shared_mutex, monitor_p->earliest_deadline);
     }
 }
 
-static struct timespec  earliest_dead_line(heap *p_queue)
+static void    finish_routine(monitor_struct *monitor_p)
 {
     int i;
-    struct timespec early;
 
-    i = 1;
-    while (1 <= p_queue->size)
-
+    i = 0;
+    earliest_dead_line(monitor_p);
+    while (i < monitor_p->loaded_config.number_of_coders)
+    {
+        monitor_p->dongles_arr[i].is_wanted = 0;
+        i++;
+    }
 }

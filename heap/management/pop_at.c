@@ -1,6 +1,6 @@
 #include "../../codexion.h"
 
-int    pop_at(heap *p_queue, int index)
+int    pop_at(queue_struct *p_queue, int index)
 {
     if (p_queue->size == 0)
     {

@@ -10,10 +10,10 @@ void *coder_routine(void *properties)
     coder_p = (coder_properties_struct *) properties;
     while (1)
     {
-        pthread_mutex_lock(coder_p->monitor_ptr->shared_mutex);
+        pthread_mutex_lock(&coder_p->monitor_ptr->shared_mutex);
         add_request(coder_p);
         coder_p->has_permission = 0;
-        pthread_cond_signal(coder_p->monitor_ptr->wake_monitor);
+        pthread_cond_signal(&coder_p->monitor_ptr->wake_monitor);
         while (!coder_p->has_permission && !coder_p->stop)
             pthread_cond_wait(&coder_p->wake_coder, &coder_p->monitor_ptr->shared_mutex);
         pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
@@ -22,10 +22,10 @@ void *coder_routine(void *properties)
         coder_compilation(coder_p);
         if (check_stop(properties))
             break;
-        log_and_sleep(coder_p->monitor_ptr, DEBUG);
+        log_and_sleep(coder_p, DEBUG);
         if (check_stop(properties))
             break;
-        log_and_sleep(coder_p->monitor_ptr, REFACTOR);
+        log_and_sleep(coder_p, REFACTOR);
     }
     return (NULL);
 }
@@ -42,11 +42,11 @@ static int check_stop(void *properties)
 
 static void    coder_compilation(coder_properties_struct *coder_p)
 {
-    pthead_mutex_lock(&coder_p->monitor_ptr->shared_mutex);
+    pthread_mutex_lock(&coder_p->monitor_ptr->shared_mutex);
     update_time_to_burnout(coder_p->monitor_ptr->loaded_config.time_to_burnout, &coder_p->to_burnout);
     coder_p->times_compiled++;
     update_both_dongles(coder_p);
     pthread_cond_signal(&coder_p->monitor_ptr->wake_monitor);
     pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
-    log_and_sleep(coder_p->monitor_ptr, COMPILE);
+    log_and_sleep(coder_p, COMPILE);
 }

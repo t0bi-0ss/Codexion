@@ -1,20 +1,42 @@
 #include "../../../codexion.h"
 
-int check_compilations_num(heap_request *request, config_struct *loaded_config)
+int check_compilations_num(monitor_struct *monitor_ptr, int *curr_index)
 {
-    return (request->coder->times_compiled == loaded_config->compiles_required);
+    coder_properties_struct *curr_req_coder;
+
+    curr_req_coder = monitor_ptr->min_heap->requests[*curr_index].coder;
+    if (curr_req_coder->times_compiled == monitor_ptr->loaded_config.compiles_required)
+    {
+        curr_req_coder->stop = 1;
+        pop_at(monitor_ptr->min_heap, *curr_index);
+        monitor_ptr->have_finished++;
+        *curr_index = 1;
+        pthread_cond_signal(&curr_req_coder->wake_coder);
+        return (1);
+    }
+    return (0);
 }
 
 // Returns 1 if burnout is detected
-int burnout_check(struct timespec burnout_time)
+int burnout_check(monitor_struct *monitor_p, int index)
 {
+    int id;
+    struct timespec *burnout_time;
     struct timespec now;
 
+    id = monitor_p->min_heap->requests[index].coder->id;
     now = get_timestamp();
-    if (burnout_time.tv_sec < now.tv_sec)
+    burnout_time = &monitor_p->min_heap->requests[index].coder->to_burnout;
+    if (burnout_time->tv_sec < now.tv_sec)
+    {
+        log_event(monitor_p, "burned out", id);
         return (1);
-    if (burnout_time.tv_sec == now.tv_sec && burnout_time.tv_nsec < now.tv_nsec)
+    }
+    if (burnout_time->tv_sec == now.tv_sec && burnout_time->tv_nsec < now.tv_nsec)
+    {    
+        log_event(monitor_p, "burned out", id);
         return (1);
+    }
     return (0);
 }
 

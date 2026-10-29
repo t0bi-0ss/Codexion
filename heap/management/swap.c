@@ -1,8 +1,8 @@
 #include "../../codexion.h"
 
-void    swap(heap_request *req_1, heap_request *req_2)
+void    swap(queue_request *req_1, queue_request *req_2)
 {
-    heap_request    tmp;
+    queue_request    tmp;
 
     tmp = *req_1;
     *req_1 = *req_2;

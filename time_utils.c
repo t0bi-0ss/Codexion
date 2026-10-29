@@ -18,12 +18,12 @@ int timespec_cmp(struct timespec *first_stamp, struct timespec *second_stamp)
     long second_stamp_total;
 
     if (!second_stamp)
-        return (-1);
-    if (!first_stamp)
         return (1);
+    if (!first_stamp)
+        return (0);
     first_stamp_total = first_stamp->tv_nsec / 1000 + first_stamp->tv_sec * 1000;
     second_stamp_total = second_stamp->tv_nsec / 1000 + second_stamp->tv_sec * 1000;
-    return (second_stamp_total > first_stamp_total);
+    return (first_stamp_total < second_stamp_total);
 }
 
 void update_time_to_burnout(long burnout_time, struct timespec *time_to_burnout)

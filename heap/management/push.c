@@ -1,6 +1,6 @@
 #include "../../codexion.h"
 
-void    push(heap *p_queue, heap_request new_request)
+void    push(queue_struct *p_queue, queue_request new_request)
 {
     if (p_queue->size >= p_queue->capacity)
     {

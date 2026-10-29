@@ -1,9 +1,9 @@
 #include "../../codexion.h"
 
-void    sift_down(heap *p_queue, int index)
+void    sift_down(queue_struct *p_queue, int index)
 {
     int child;
-    heap_request    *req_ptr;
+    queue_request    *req_ptr;
 
     req_ptr = p_queue->requests;
     if (req_ptr[1].coder == NULL)
