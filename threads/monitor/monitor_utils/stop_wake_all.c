@@ -6,7 +6,7 @@ void    stop_wake_all(coder_properties_struct *coders_arr,
 {
     int i;
 
-    i = 1;
+    i = 0;
     while (i < loaded_config->number_of_coders)
     {
         if (!coders_arr[i].stop)

@@ -8,7 +8,7 @@ int cmp_timeof_request(queue_request first_req, queue_request second_req)
 
     first_timeof = NULL;
     second_timeof = NULL;
-    *first_timeof = first_req.timeof_request;
-    *second_timeof = second_req.timeof_request;
+    first_timeof = &first_req.timeof_request;
+    second_timeof = &second_req.timeof_request;
     return (timespec_cmp(first_timeof, second_timeof));
 }

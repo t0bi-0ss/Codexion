@@ -44,7 +44,14 @@ static void reserve_n_wake(monitor_struct *monitor_p, queue_request *request, in
 
 static void mark_as_wanted(queue_request *request, int dongle_1_index, int dongle_2_index)
 {
-    request->coder->monitor_ptr->dongles_arr[dongle_1_index].is_wanted = 1;
-    request->coder->monitor_ptr->dongles_arr[dongle_2_index].is_wanted = 1;
+    dongle_struct   *f_dongle;
+    dongle_struct   *s_dongle;
+
+    f_dongle = &request->coder->monitor_ptr->dongles_arr[dongle_1_index];
+    s_dongle = &request->coder->monitor_ptr->dongles_arr[dongle_2_index];
+    if (f_dongle->is_wanted || s_dongle->is_wanted)
+        return ;
+    f_dongle->is_wanted = 1;
+    s_dongle->is_wanted = 1;
 }
 

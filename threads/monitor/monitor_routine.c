@@ -15,9 +15,12 @@ void    *monitor_routine(void *properties)
         while (i <= monitor_p->min_heap->size)
         {
             if (check_compilations_num(monitor_p, &i))
-                continue;
-            if (monitor_p->have_finished == monitor_p->loaded_config.number_of_coders)
-                return (pthread_mutex_unlock(&monitor_p->shared_mutex), NULL);
+            {
+                if (monitor_p->have_finished == monitor_p->loaded_config.number_of_coders)
+                    return (printf("all finished\n"), pthread_mutex_unlock(&monitor_p->shared_mutex), NULL);
+                else
+                    continue;
+            }
             if (burnout_check(monitor_p, i))
                 return (stop_wake_all(monitor_p->coder_properties_arr,
                     &monitor_p->loaded_config, &monitor_p->shared_mutex), NULL);
@@ -27,8 +30,9 @@ void    *monitor_routine(void *properties)
             i++;
         }
         finish_routine(monitor_p);
-        pthread_cond_wait(&monitor_p->wake_monitor, &monitor_p->shared_mutex);
+        pthread_cond_timedwait(&monitor_p->wake_monitor, &monitor_p->shared_mutex, &monitor_p->earliest_deadline);
     }
+    return (NULL);
 }
 
 static void    finish_routine(monitor_struct *monitor_p)

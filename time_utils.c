@@ -7,7 +7,7 @@ struct timespec get_timestamp()
 
     gettimeofday(&now, NULL);
     updated.tv_sec = now.tv_sec;
-    updated.tv_nsec = now.tv_usec;
+    updated.tv_nsec = now.tv_usec * 1000;
     return (updated);
 }
 
@@ -21,8 +21,8 @@ int timespec_cmp(struct timespec *first_stamp, struct timespec *second_stamp)
         return (1);
     if (!first_stamp)
         return (0);
-    first_stamp_total = first_stamp->tv_nsec / 1000 + first_stamp->tv_sec * 1000;
-    second_stamp_total = second_stamp->tv_nsec / 1000 + second_stamp->tv_sec * 1000;
+    first_stamp_total = first_stamp->tv_nsec / 1000000 + first_stamp->tv_sec * 1000;
+    second_stamp_total = second_stamp->tv_nsec / 1000000 + second_stamp->tv_sec * 1000;
     return (first_stamp_total < second_stamp_total);
 }
 
@@ -32,5 +32,5 @@ void update_time_to_burnout(long burnout_time, struct timespec *time_to_burnout)
 	
     current_time = get_timestamp();
     time_to_burnout->tv_sec = current_time.tv_sec + burnout_time / 1000;
-    time_to_burnout->tv_nsec = current_time.tv_nsec;
+    time_to_burnout->tv_nsec = current_time.tv_nsec + burnout_time % 1000 * 1000000;
 }

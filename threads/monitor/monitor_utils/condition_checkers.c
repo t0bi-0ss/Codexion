@@ -26,13 +26,8 @@ int burnout_check(monitor_struct *monitor_p, int index)
     id = monitor_p->min_heap->requests[index].coder->id;
     now = get_timestamp();
     burnout_time = &monitor_p->min_heap->requests[index].coder->to_burnout;
-    if (burnout_time->tv_sec < now.tv_sec)
+    if (timespec_cmp(burnout_time, &now))
     {
-        log_event(monitor_p, "burned out", id);
-        return (1);
-    }
-    if (burnout_time->tv_sec == now.tv_sec && burnout_time->tv_nsec < now.tv_nsec)
-    {    
         log_event(monitor_p, "burned out", id);
         return (1);
     }

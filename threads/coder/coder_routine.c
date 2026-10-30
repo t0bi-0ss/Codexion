@@ -17,6 +17,8 @@ void *coder_routine(void *properties)
         while (!coder_p->has_permission && !coder_p->stop)
             pthread_cond_wait(&coder_p->wake_coder, &coder_p->monitor_ptr->shared_mutex);
         pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
+        if (check_stop(properties))
+            break ;
         log_and_sleep(coder_p, GRAB);
         if (check_stop(properties))
             break ;
@@ -38,6 +40,8 @@ static int check_stop(void *properties)
 
     coder = (coder_properties_struct *) properties;
     stop_copy = coder->stop;
+    if (stop_copy)
+        log_event(coder->monitor_ptr, "has stopped", coder->id);
     return (stop_copy);
 }
 

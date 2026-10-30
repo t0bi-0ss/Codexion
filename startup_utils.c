@@ -54,7 +54,6 @@ static void    all_to_null(monitor_struct *monitor_ptr)
     monitor_ptr->coder_threads_arr = NULL;
     monitor_ptr->coder_properties_arr = NULL;
     monitor_ptr->dongles_arr = NULL;
-    monitor_ptr->earliest_deadline = NULL;
     monitor_ptr->min_heap = NULL;
 }
 
@@ -68,7 +67,6 @@ static void init_dongles(monitor_struct *monitor_p)
     while (i < monitor_p->loaded_config.number_of_coders)
     {
         dongle_ptr = &monitor_p->dongles_arr[i];
-        dongle_ptr->cooldown_end = get_timestamp();
         dongle_ptr->in_cd = 0;
         dongle_ptr->is_held = 0;
         dongle_ptr->is_wanted = 0;

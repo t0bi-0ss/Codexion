@@ -14,11 +14,11 @@
 
 void    free_all(monitor_struct *monitor_p)
 {
-    if (monitor_p->coder_threads_arr)
-    {
-        free(monitor_p->coder_threads_arr);
-        monitor_p->coder_threads_arr = NULL;
-    }
+    // if (monitor_p->coder_threads_arr)
+    // {
+    //     free(monitor_p->coder_threads_arr);
+    //     monitor_p->coder_threads_arr = NULL;
+    // }
     if (monitor_p->coder_properties_arr)
     {
         free(monitor_p->coder_properties_arr);

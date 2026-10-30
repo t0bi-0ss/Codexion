@@ -85,7 +85,7 @@ struct monitor_struct{
     dongle_struct   *dongles_arr;
     queue_struct    *min_heap;
     int have_finished;
-    struct timespec *earliest_deadline;
+    struct timespec earliest_deadline;
     struct timespec start_time;
     pthread_mutex_t   shared_mutex;
     pthread_mutex_t mutex_stdout;

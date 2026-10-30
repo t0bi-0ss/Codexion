@@ -30,8 +30,8 @@ static int get_args(config_struct *config_p, char **argv)
     config_p->time_to_compile = atoi(argv[3]);
     config_p->time_to_debug = atoi(argv[4]);
     config_p->time_to_refactor = atoi(argv[5]);
-    config_p->compiles_required = atoi(argv[6]);
-    config_p->dongle_cooldown = atoi(argv[7]);
+    config_p->dongle_cooldown = atoi(argv[6]);
+    config_p->compiles_required = atoi(argv[7]);
     
     return (0);
 }

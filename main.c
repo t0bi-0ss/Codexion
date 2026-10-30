@@ -30,13 +30,13 @@ int main(int argc, char **argv)
         pthread_create(&monitor_p.coder_threads_arr[i], NULL, coder_routine, &monitor_p.coder_properties_arr[i]);
         i++;
     }
-    pthread_join(monitor_thread, NULL);
     i = 0;
     while (i < monitor_p.loaded_config.number_of_coders)
     {
         pthread_join(monitor_p.coder_threads_arr[i], NULL);
         i++;
     }
+    pthread_join(monitor_thread, NULL);
     finish_simulation(&monitor_p);
     return (0);
 }
