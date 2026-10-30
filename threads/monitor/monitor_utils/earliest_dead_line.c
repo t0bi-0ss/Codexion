@@ -9,6 +9,8 @@ void  earliest_dead_line(monitor_struct *monitor_ptr)
     struct timespec *early_brnt;
     struct timespec *early_cd;
 
+    if (monitor_ptr->min_heap->size == 0)
+        return ;
     early_brnt = earliest_brnt(monitor_ptr->min_heap);
     early_cd = earliest_cd(monitor_ptr->dongles_arr, monitor_ptr->loaded_config.number_of_coders);
     if (timespec_cmp(early_cd, early_brnt))

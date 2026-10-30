@@ -27,7 +27,7 @@ void    *monitor_routine(void *properties)
             i++;
         }
         finish_routine(monitor_p);
-        pthread_cond_timedwait(&monitor_p->wake_monitor, &monitor_p->shared_mutex, monitor_p->earliest_deadline);
+        pthread_cond_wait(&monitor_p->wake_monitor, &monitor_p->shared_mutex);
     }
 }
 
@@ -36,10 +36,10 @@ static void    finish_routine(monitor_struct *monitor_p)
     int i;
 
     i = 0;
-    earliest_dead_line(monitor_p);
     while (i < monitor_p->loaded_config.number_of_coders)
     {
         monitor_p->dongles_arr[i].is_wanted = 0;
         i++;
     }
+    earliest_dead_line(monitor_p);
 }

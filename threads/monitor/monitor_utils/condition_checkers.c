@@ -10,7 +10,6 @@ int check_compilations_num(monitor_struct *monitor_ptr, int *curr_index)
         curr_req_coder->stop = 1;
         pop_at(monitor_ptr->min_heap, *curr_index);
         monitor_ptr->have_finished++;
-        *curr_index = 1;
         pthread_cond_signal(&curr_req_coder->wake_coder);
         return (1);
     }

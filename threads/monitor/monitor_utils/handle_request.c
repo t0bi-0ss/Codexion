@@ -1,7 +1,7 @@
 #include "../../../codexion.h"
 
 static int are_dongles_available(dongle_struct *dongles_arr, int dong_1_index, int dong_2_index);
-static void reserve_n_wake(queue_request *request, int dongle_1_index, int dongle_2_index);
+static void reserve_n_wake(monitor_struct *monitor_p, queue_request *request, int dongle_1_index, int dongle_2_index);
 static void mark_as_wanted(queue_request *request, int dongle_1_index, int dongle_2_index);
 
 // Reserves dongles and wakes coder in case request is considered valid, otherwise marks dongles as requested
@@ -14,9 +14,8 @@ int  handle_request(monitor_struct *monitor_p, queue_request *request, int *curr
     dongle_2_index = request->coder->dongle_2_index;
     if (are_dongles_available(monitor_p->dongles_arr, dongle_1_index, dongle_2_index))
     {
-        reserve_n_wake(request, dongle_1_index, dongle_2_index);
+        reserve_n_wake(monitor_p, request, dongle_1_index, dongle_2_index);
         pop_at(monitor_p->min_heap, *curr_index);
-        *curr_index = 1;
         return (1);
     }
     mark_as_wanted(request, dongle_1_index, dongle_2_index);
@@ -33,12 +32,13 @@ static int are_dongles_available(dongle_struct *dongles_arr, int dong_1_index, i
         && cooldown_check(dongles_arr[dong_2_index].cooldown_end));
 }
 
-static void reserve_n_wake(queue_request *request, int dongle_1_index, int dongle_2_index)
+static void reserve_n_wake(monitor_struct *monitor_p, queue_request *request, int dongle_1_index, int dongle_2_index)
 {
     request->coder->monitor_ptr->dongles_arr[dongle_1_index].is_held = 1;
     request->coder->monitor_ptr->dongles_arr[dongle_2_index].is_held = 1;
     request->coder->has_permission = 1;
     request->coder->times_compiled++;
+    update_time_to_burnout(monitor_p->loaded_config.time_to_burnout, &request->coder->to_burnout);
     pthread_cond_signal(&request->coder->wake_coder);
 }
 

@@ -1,7 +1,7 @@
 #include "../../../codexion.h"
 
-void static    update_dongle(dongle_struct *dongle_ptr, long dongle_cooldown);
-void static    update_cooldown(long dongle_cooldown, struct timespec *cooldown_end);
+static void    update_dongle(dongle_struct *dongle_ptr, long dongle_cooldown);
+static void    update_cooldown(long dongle_cooldown, struct timespec *cooldown_end);
 
 void    update_both_dongles(coder_properties_struct *coder_p)
 {
@@ -18,14 +18,14 @@ void    update_both_dongles(coder_properties_struct *coder_p)
     update_dongle(dongle_two, dongle_cooldown);
 }
 
-void static    update_dongle(dongle_struct *dongle_ptr, long dongle_cooldown)
+static void    update_dongle(dongle_struct *dongle_ptr, long dongle_cooldown)
 {
     dongle_ptr->is_held = 0;
     dongle_ptr->in_cd = 1;
     update_cooldown(dongle_cooldown, &dongle_ptr->cooldown_end);
 }
 
-void static    update_cooldown(long dongle_cooldown, struct timespec *cooldown_end)
+static void    update_cooldown(long dongle_cooldown, struct timespec *cooldown_end)
 {
     struct timespec updated;
 

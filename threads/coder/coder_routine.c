@@ -17,6 +17,7 @@ void *coder_routine(void *properties)
         while (!coder_p->has_permission && !coder_p->stop)
             pthread_cond_wait(&coder_p->wake_coder, &coder_p->monitor_ptr->shared_mutex);
         pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
+        log_and_sleep(coder_p, GRAB);
         if (check_stop(properties))
             break ;
         coder_compilation(coder_p);
@@ -42,11 +43,9 @@ static int check_stop(void *properties)
 
 static void    coder_compilation(coder_properties_struct *coder_p)
 {
+    log_and_sleep(coder_p, COMPILE);
     pthread_mutex_lock(&coder_p->monitor_ptr->shared_mutex);
-    update_time_to_burnout(coder_p->monitor_ptr->loaded_config.time_to_burnout, &coder_p->to_burnout);
-    coder_p->times_compiled++;
     update_both_dongles(coder_p);
     pthread_cond_signal(&coder_p->monitor_ptr->wake_monitor);
     pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
-    log_and_sleep(coder_p, COMPILE);
 }
