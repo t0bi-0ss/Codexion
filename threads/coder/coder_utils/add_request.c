@@ -7,4 +7,5 @@ void    add_request(coder_properties_struct *coder_p)
     new_request.coder = coder_p;
     new_request.timeof_request = get_timestamp();
     push(coder_p->monitor_ptr->min_heap, new_request);
+    log_event(coder_p->monitor_ptr, "made a request", coder_p->id);
 }

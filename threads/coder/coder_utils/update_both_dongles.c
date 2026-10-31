@@ -16,6 +16,7 @@ void    update_both_dongles(coder_properties_struct *coder_p)
     dongle_two = &dongles_arr[coder_p->dongle_2_index];
     update_dongle(dongle_one, dongle_cooldown);
     update_dongle(dongle_two, dongle_cooldown);
+    pthread_cond_signal(&coder_p->monitor_ptr->wake_monitor);
 }
 
 static void    update_dongle(dongle_struct *dongle_ptr, long dongle_cooldown)

@@ -23,6 +23,7 @@ void *coder_routine(void *properties)
         if (check_stop(properties))
             break ;
         coder_compilation(coder_p);
+        pthread_cond_signal(&coder_p->monitor_ptr->wake_monitor);
         if (check_stop(properties))
             break;
         log_and_sleep(coder_p, DEBUG);

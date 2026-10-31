@@ -24,6 +24,8 @@ int  handle_request(monitor_struct *monitor_p, queue_request *request, int *curr
 
 static int are_dongles_available(dongle_struct *dongles_arr, int dong_1_index, int dong_2_index)
 {
+    printf("Dongle %i is wanted = %i\tis held = %i\n", dong_1_index, dongles_arr[dong_1_index].is_wanted, dongles_arr[dong_1_index].is_held);
+    printf("Dongle %i is wanted = %i\tis held = %i\n", dong_2_index, dongles_arr[dong_2_index].is_wanted, dongles_arr[dong_2_index].is_held);
     return (!dongles_arr[dong_1_index].is_held
         && !dongles_arr[dong_1_index].is_wanted
         && !dongles_arr[dong_2_index].is_held

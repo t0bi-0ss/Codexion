@@ -39,9 +39,7 @@ int cooldown_check(struct timespec cooldown_time)
     struct timespec now;
 
     now = get_timestamp();
-    if (cooldown_time.tv_sec < now.tv_sec)
+    if (timespec_cmp(&cooldown_time, &now))
         return (1);
-    if (cooldown_time.tv_sec == now.tv_sec)
-        return (cooldown_time.tv_nsec <= now.tv_nsec);
     return (0);
 }

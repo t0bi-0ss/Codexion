@@ -30,7 +30,15 @@ void    *monitor_routine(void *properties)
             i++;
         }
         finish_routine(monitor_p);
+        // pthread_mutex_lock(&monitor_p->mutex_stdout);
+        // struct timespec now;
+        // now = get_timestamp();
+        // long s = (monitor_p->earliest_deadline.tv_sec - now.tv_sec) * 1000 + (monitor_p->earliest_deadline.tv_nsec - now.tv_nsec) / 1000000;
+        // printf("MONITOR WILL WAKE IN %ld\n", s);
+        // pthread_mutex_unlock(&monitor_p->mutex_stdout);
         pthread_cond_timedwait(&monitor_p->wake_monitor, &monitor_p->shared_mutex, &monitor_p->earliest_deadline);
+        monitor_p->earliest_deadline.tv_sec = 0;
+        monitor_p->earliest_deadline.tv_nsec = 0;
     }
     return (NULL);
 }
