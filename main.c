@@ -23,10 +23,15 @@ int main(int argc, char **argv)
     if (init_monitor(&monitor_p))
         return (2);
     i = 0;
-    pthread_create(&monitor_thread, NULL, monitor_routine, &monitor_p);
     while (i < monitor_p.loaded_config.number_of_coders)
     {
         init_coder_p(&monitor_p.coder_properties_arr[i], &monitor_p, i);
+        i++;
+    }
+    pthread_create(&monitor_thread, NULL, monitor_routine, &monitor_p);
+    i = 0;
+    while (i < monitor_p.loaded_config.number_of_coders)
+    {
         pthread_create(&monitor_p.coder_threads_arr[i], NULL, coder_routine, &monitor_p.coder_properties_arr[i]);
         i++;
     }

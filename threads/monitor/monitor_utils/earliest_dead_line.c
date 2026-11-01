@@ -12,9 +12,13 @@ void  earliest_dead_line(monitor_struct *monitor_ptr)
     early_brnt = earliest_brnt(monitor_ptr);
     early_cd = earliest_cd(monitor_ptr->dongles_arr, monitor_ptr->loaded_config.number_of_coders);
     if (early_cd.tv_sec != 0 && timespec_cmp(&early_cd, &early_brnt))
+    {
         monitor_ptr->earliest_deadline = early_cd;
+    }
     else
+    {
         monitor_ptr->earliest_deadline = early_brnt;
+    }
 }
 
 // Returns earliest brnt found among requests array
@@ -39,6 +43,8 @@ static struct timespec earliest_brnt(monitor_struct *monitor_p)
                 earliest_brnt_found = coders_arr[i].to_burnout;
         i++;
     }
+    if (timespec_cmp(&earliest_brnt_found, &now))
+        return (now);
     return (earliest_brnt_found);
 }
 
@@ -65,5 +71,7 @@ static struct timespec  earliest_cd(dongle_struct *dongles_arr, int num)
         }
         i++;
     }
+    if (timespec_cmp(&earliest_cd_found, &now))
+        return (now);
     return (earliest_cd_found);
 }

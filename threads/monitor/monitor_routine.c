@@ -21,7 +21,7 @@ void    *monitor_routine(void *properties)
                 else
                     continue;
             }
-            if (burnout_check(monitor_p, i))
+            else if (burnout_check(monitor_p, i))
                 return (stop_wake_all(monitor_p->coder_properties_arr,
                     &monitor_p->loaded_config, &monitor_p->shared_mutex), NULL);
             else if (handle_request(monitor_p,
@@ -33,8 +33,11 @@ void    *monitor_routine(void *properties)
         // pthread_mutex_lock(&monitor_p->mutex_stdout);
         // struct timespec now;
         // now = get_timestamp();
-        // long s = (monitor_p->earliest_deadline.tv_sec - now.tv_sec) * 1000 + (monitor_p->earliest_deadline.tv_nsec - now.tv_nsec) / 1000000;
+        // long s = (monitor_p->earliest_deadline.tv_sec - now.tv_sec) * 1000 + (monitor_p->earliest_deadline.tv_nsec - now.tv_nsec) / 1000000000;
         // printf("MONITOR WILL WAKE IN %ld\n", s);
+        // printf("NOW IS %ld\n", now.tv_sec);
+        // sleep(2);
+        // printf("early dl %ld %ld\n", monitor_p->earliest_deadline.tv_sec, monitor_p->earliest_deadline.tv_nsec);
         // pthread_mutex_unlock(&monitor_p->mutex_stdout);
         pthread_cond_timedwait(&monitor_p->wake_monitor, &monitor_p->shared_mutex, &monitor_p->earliest_deadline);
         monitor_p->earliest_deadline.tv_sec = 0;

@@ -14,16 +14,13 @@ struct timespec get_timestamp()
 // Returns 1 if first_stamp occurs sooner than second_stamp
 int timespec_cmp(struct timespec *first_stamp, struct timespec *second_stamp)
 {
-    long first_stamp_total;
-    long second_stamp_total;
-
-    if (!second_stamp)
+    if (!second_stamp || second_stamp->tv_sec == 0)
         return (1);
     if (!first_stamp)
         return (0);
-    first_stamp_total = first_stamp->tv_nsec / 1000000 + first_stamp->tv_sec * 1000;
-    second_stamp_total = second_stamp->tv_nsec / 1000000 + second_stamp->tv_sec * 1000;
-    return (first_stamp_total < second_stamp_total);
+    if (first_stamp->tv_sec != second_stamp->tv_sec)
+        return (first_stamp->tv_sec < second_stamp->tv_sec);
+    return (first_stamp->tv_nsec < second_stamp->tv_nsec);
 }
 
 void update_time_to_burnout(long burnout_time, struct timespec *time_to_burnout)
@@ -31,6 +28,21 @@ void update_time_to_burnout(long burnout_time, struct timespec *time_to_burnout)
 	struct timespec current_time;
 	
     current_time = get_timestamp();
-    time_to_burnout->tv_sec = current_time.tv_sec + burnout_time / 1000;
-    time_to_burnout->tv_nsec = current_time.tv_nsec + burnout_time % 1000 * 1000000;
+    // printf("CURRENT TIME %ld\n", current_time.tv_sec);
+    // printf("TIME TO ADD %ld\n", burnout_time);
+    timespec_add_time(&current_time, burnout_time);
+    time_to_burnout->tv_sec = current_time.tv_sec;
+    // printf("BRNT TIME %ld\n", time_to_burnout->tv_sec);
+    time_to_burnout->tv_nsec = current_time.tv_nsec;
+}
+
+void    timespec_add_time(struct timespec *time_stamp, long time_ms)
+{
+    time_stamp->tv_sec += time_ms / 1000;
+    time_stamp->tv_nsec += (time_ms % 1000) * 1000000;
+    if (time_stamp->tv_nsec >= 1000000000)
+    {
+        time_stamp->tv_sec += time_stamp->tv_nsec / 1000000000;
+        time_stamp->tv_nsec %= 1000000000;
+    }
 }
