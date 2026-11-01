@@ -12,6 +12,9 @@
 
 #include "codexion.h"
 
+static int init_structs(monitor_struct *monitor_p);
+static void start_threads()
+
 int main(int argc, char **argv)
 {
     int i;
@@ -20,14 +23,8 @@ int main(int argc, char **argv)
 
     if (get_and_validate_args(argc, argv, &monitor_p))
         return (1);
-    if (init_monitor(&monitor_p))
+    if (init_structs(&monitor_p))
         return (2);
-    i = 0;
-    while (i < monitor_p.loaded_config.number_of_coders)
-    {
-        init_coder_p(&monitor_p.coder_properties_arr[i], &monitor_p, i);
-        i++;
-    }
     pthread_create(&monitor_thread, NULL, monitor_routine, &monitor_p);
     i = 0;
     while (i < monitor_p.loaded_config.number_of_coders)
@@ -44,4 +41,18 @@ int main(int argc, char **argv)
     pthread_join(monitor_thread, NULL);
     finish_simulation(&monitor_p);
     return (0);
+}
+
+static int init_structs(monitor_struct *monitor_p)
+{
+    int i;
+
+    if (init_monitor(&monitor_p))
+        return (1);
+    i = 0;
+    while (i < monitor_p->loaded_config.number_of_coders)
+    {
+        init_coder_p(&monitor_p->coder_properties_arr[i], monitor_p, i);
+        i++;
+    }
 }

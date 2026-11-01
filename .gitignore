@@ -2,3 +2,5 @@ a.out
 .vscode
 Objects/
 codexion
+.venv
+norminette-auto-formatter

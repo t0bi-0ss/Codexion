@@ -76,6 +76,7 @@ typedef struct {
     int is_wanted;
     int in_cd;
     struct timespec cooldown_end;
+    struct timespec last_time_used;
 } dongle_struct;
 
 struct monitor_struct{
@@ -118,6 +119,8 @@ int cmp_burnout(queue_request first_req, queue_request second_req);
 struct timespec get_timestamp();
 int timespec_cmp(struct timespec *first_stamp, struct timespec *second_stamp);
 void    timespec_add_time(struct timespec *time_stamp, long time_ms);
+long    time_until_now(struct timespec *time_stamp);
+long    time_from_now(struct timespec *dead_line);
 
 // ROUTINES
 

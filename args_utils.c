@@ -22,10 +22,15 @@ static int get_args(config_struct *config_p, char **argv)
         config_p->scheduler_config = EDF;
     else
     {
-        fprintf(stderr, "Args error: 'scheduler' wrong input");
+        fprintf(stderr, "Args error: 'scheduler' wrong input\n");
         return (1);
     }
     config_p->number_of_coders = atoi(argv[1]);
+    if (config_p->number_of_coders <= 1)
+    {
+        fprintf(stderr, "Args error: invalid number of coders\n");
+        return (2);
+    }
     config_p->time_to_burnout = atoi(argv[2]);
     config_p->time_to_compile = atoi(argv[3]);
     config_p->time_to_debug = atoi(argv[4]);
