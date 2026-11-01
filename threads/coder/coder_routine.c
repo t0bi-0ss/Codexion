@@ -16,7 +16,7 @@ void *coder_routine(void *properties)
         pthread_cond_signal(&coder_p->monitor_ptr->wake_monitor);
         while (!coder_p->has_permission && !coder_p->stop)
             pthread_cond_wait(&coder_p->wake_coder, &coder_p->monitor_ptr->shared_mutex);
-       pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
+        pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
         if (check_stop(properties))
             break ;
         log_and_sleep(coder_p, GRAB);
