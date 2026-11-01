@@ -10,7 +10,6 @@ void    init_coder_p(coder_properties_struct *coder_p, monitor_struct *monitor_p
     coder_p->has_permission = 0;
     pthread_cond_init(&coder_p->wake_coder, NULL);
     set_dongles_index(coder_p, &monitor_p->loaded_config);
-    coder_p->last_compile = get_timestamp();
     update_time_to_burnout(monitor_p->loaded_config.time_to_burnout, &coder_p->to_burnout);
     coder_p->monitor_ptr = monitor_p;
 }

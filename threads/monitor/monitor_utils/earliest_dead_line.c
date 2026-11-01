@@ -32,6 +32,8 @@ static struct timespec earliest_brnt(monitor_struct *monitor_p)
 
     coders_num = monitor_p->loaded_config.number_of_coders;
     coders_arr = monitor_p->coder_properties_arr;
+    earliest_brnt_found.tv_nsec = 0;
+    earliest_brnt_found.tv_sec = 0;
     now = get_timestamp();
     i = 0;
     while (i < coders_num)
@@ -57,6 +59,8 @@ static struct timespec  earliest_cd(dongle_struct *dongles_arr, int num)
     
     i = 0;
     now = get_timestamp();
+    earliest_cd_found.tv_nsec = 0;
+    earliest_cd_found.tv_sec = 0;
     while (i < num)
     {
         if (dongles_arr[i].in_cd)

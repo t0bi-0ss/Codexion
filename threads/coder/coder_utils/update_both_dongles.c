@@ -20,7 +20,11 @@ void    update_both_dongles(coder_properties_struct *coder_p)
 
 static void    update_dongle(dongle_struct *dongle_ptr, long dongle_cooldown)
 {
+    struct timespec now;
+
+    now = get_timestamp();
     dongle_ptr->is_held = 0;
     dongle_ptr->in_cd = 1;
-    timespec_add_time(&dongle_ptr->cooldown_end, dongle_cooldown);
+    timespec_add_time(&now, dongle_cooldown);
+    dongle_ptr->cooldown_end = now;
 }

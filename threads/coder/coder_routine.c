@@ -1,6 +1,5 @@
 #include "../../codexion.h"
 
-static int check_stop(void *properties);
 static int    coder_compilation(coder_properties_struct *coder_p);
 static int  coder_action(coder_properties_struct *coder_p, Coder_actions action);
 
@@ -29,16 +28,6 @@ void *coder_routine(void *properties)
             break;
     }
     return (NULL);
-}
-
-static int check_stop(void *properties)
-{
-    int stop_copy;
-    coder_properties_struct *coder;
-
-    coder = (coder_properties_struct *) properties;
-    stop_copy = coder->stop;
-    return (stop_copy);
 }
 
 static int    coder_compilation(coder_properties_struct *coder_p)

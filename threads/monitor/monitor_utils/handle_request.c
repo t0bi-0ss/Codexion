@@ -78,8 +78,12 @@ static long  evaluate_wait_time(coder_properties_struct *coder, dongle_struct *f
     long    time_to_burnout;
     config_struct   *loaded_config;
 
-    f_wait = time_until_now(&f_dongle->last_time_used);
-    s_wait = time_until_now(&s_dongle->last_time_used);
+    f_wait = 0;
+    s_wait = 0;
+    if (f_dongle->last_time_used.tv_sec != 0)
+        f_wait = time_until_now(&f_dongle->last_time_used);
+    if (s_dongle->last_time_used.tv_sec != 0)
+        s_wait = time_until_now(&s_dongle->last_time_used);
     loaded_config = &coder->monitor_ptr->loaded_config;
     times_combined = loaded_config->dongle_cooldown + loaded_config->time_to_compile + loaded_config->time_to_debug + loaded_config->time_to_refactor;
     time_to_burnout = time_from_now(&coder->to_burnout);

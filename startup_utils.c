@@ -29,6 +29,8 @@ int init_monitor(monitor_struct *monitor_ptr)
     pthread_mutex_init(&monitor_ptr->shared_mutex, NULL);
     pthread_mutex_init(&monitor_ptr->mutex_stdout, NULL);
     pthread_cond_init(&monitor_ptr->wake_monitor, NULL);
+    monitor_ptr->earliest_deadline.tv_nsec = 0;
+    monitor_ptr->earliest_deadline.tv_sec = 0;
     init_dongles(monitor_ptr);
     return (0);    
 }
@@ -70,6 +72,10 @@ static void init_dongles(monitor_struct *monitor_p)
         dongle_ptr->in_cd = 0;
         dongle_ptr->is_held = 0;
         dongle_ptr->is_wanted = 0;
+        dongle_ptr->cooldown_end.tv_nsec = 0;
+        dongle_ptr->cooldown_end.tv_sec = 0;
+        dongle_ptr->last_time_used.tv_nsec = 0;
+        dongle_ptr->last_time_used.tv_sec = 0;
         i++;
     }
 }

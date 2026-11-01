@@ -51,7 +51,6 @@ typedef struct {
     unsigned int    times_compiled;
     int stop;
     int has_permission;
-    struct  timespec last_compile;
     struct timespec to_burnout;
     pthread_cond_t  wake_coder;
     int dongle_1_index;
