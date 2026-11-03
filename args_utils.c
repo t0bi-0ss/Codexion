@@ -1,16 +1,26 @@
 #include "codexion.h"
 
 static int get_args(config_struct *config_p, char **argv);
+static int  validate_args(int argc, char **argv);
+static  int ft_is_numeric(char *str);
 
 int get_and_validate_args(int argc, char **argv, monitor_struct *monitor_p)
 {
-    if (argc < 9)
-    {
-        printf("Args error: insufficient arguments\n");
+    if (validate_args(argc, argv))
         return (1);
-    }
-	if (get_args(&monitor_p->loaded_config, argv))
+	else if (get_args(&monitor_p->loaded_config, argv))
         return (2);
+    return (0);
+}
+
+static  int ft_is_numeric(char *str)
+{
+    while (*str)
+    {
+        if (*str < '0' || *str > '9')
+            return (1);
+        str++;
+    }
     return (0);
 }
 
@@ -26,9 +36,9 @@ static int get_args(config_struct *config_p, char **argv)
         return (1);
     }
     config_p->number_of_coders = atoi(argv[1]);
-    if (config_p->number_of_coders <= 1)
+    if (config_p->number_of_coders == 1)
     {
-        fprintf(stderr, "Args error: invalid number of coders\n");
+        fprintf(stderr, "Args error: number of coders should be grater than 1\n");
         return (2);
     }
     config_p->time_to_burnout = atoi(argv[2]);
@@ -38,5 +48,32 @@ static int get_args(config_struct *config_p, char **argv)
     config_p->dongle_cooldown = atoi(argv[6]);
     config_p->compiles_required = atoi(argv[7]);
     
+    return (0);
+}
+
+static int  validate_args(int argc, char **argv)
+{
+    int i;
+
+    if (argc < 9)
+    {
+        fprintf(stderr, "Args error: insufficient arguments\n");
+        return (1);
+    }
+    i = 1;
+    while (i <= 7)
+    {
+        if (ft_is_numeric(argv[i]))
+        {
+            fprintf(stderr, "Args error: arg is not all numeric\n");
+            return (2);
+        }
+        if (atoi(argv[i]) == 0)
+        {
+            fprintf(stderr, "Args error: all number args should be greater than zero\n");
+            return (3);
+        }
+        i++;
+    }
     return (0);
 }

@@ -13,7 +13,7 @@ queue_struct    *init_heap(config_struct *loaded_config)
     coders_num = loaded_config->number_of_coders;
     initiated_heap->capacity = coders_num;
     initiated_heap->size = 0;
-    initiated_heap->requests = (queue_request *) malloc(sizeof(queue_request) * coders_num + 1);
+    initiated_heap->requests = (queue_request *) malloc(sizeof(queue_request) * (coders_num + 1));
     if (!initiated_heap->requests)
         return (free(initiated_heap), NULL);
     if (select_func(initiated_heap, loaded_config->scheduler_config))

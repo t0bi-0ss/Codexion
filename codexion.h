@@ -138,7 +138,7 @@ void    log_and_sleep(coder_properties_struct *coder_p, Coder_actions action);
 // MONITOR UTILS
 
 int init_monitor(monitor_struct *monitor_ptr);
-int burnout_check(monitor_struct *monitor_p, int index);
+int burnout_check(monitor_struct *monitor_p);
 int cooldown_check(struct timespec cooldown_time);
 int check_compilations_num(monitor_struct *monitor_ptr, int *curr_index);
 void    stop_wake_all(coder_properties_struct *coders_arr,

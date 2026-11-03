@@ -17,19 +17,29 @@ int check_compilations_num(monitor_struct *monitor_ptr, int *curr_index)
 }
 
 // Returns 1 if burnout is detected
-int burnout_check(monitor_struct *monitor_p, int index)
+int burnout_check(monitor_struct *monitor_p)
 {
     int id;
+    int i;
+    int coders_num;
     struct timespec *burnout_time;
     struct timespec now;
 
-    id = monitor_p->min_heap->requests[index].coder->id;
     now = get_timestamp();
-    burnout_time = &monitor_p->min_heap->requests[index].coder->to_burnout;
-    if (timespec_cmp(burnout_time, &now))
+    i = 0;
+    coders_num = monitor_p->loaded_config.number_of_coders;
+    while (i < coders_num)
     {
-        log_event(monitor_p, "burned out", id);
-        return (1);
+        id = monitor_p->coder_properties_arr[i].id;
+        burnout_time = &monitor_p->coder_properties_arr[i].to_burnout;
+        if (!monitor_p->coder_properties_arr[i].stop && timespec_cmp(burnout_time, &now))
+        {
+            log_event(monitor_p, "burned out", id);
+            stop_wake_all(monitor_p->coder_properties_arr,
+                &monitor_p->loaded_config, &monitor_p->shared_mutex);
+            return (1);
+        }
+        i++;
     }
     return (0);
 }

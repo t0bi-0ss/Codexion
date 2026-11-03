@@ -37,6 +37,9 @@ static int    coder_compilation(coder_properties_struct *coder_p)
     log_and_sleep(coder_p, COMPILE);
     pthread_mutex_lock(&coder_p->monitor_ptr->shared_mutex);
     update_both_dongles(coder_p);
+    // coder_p->times_compiled++;
+    // update_time_to_burnout(coder_p->monitor_ptr->loaded_config.time_to_burnout, &coder_p->to_burnout);
+    // timespec_add_time(&coder_p->to_burnout, coder_p->monitor_ptr->loaded_config.time_to_burnout);
     pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
     return (0);
 }
