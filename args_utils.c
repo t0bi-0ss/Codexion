@@ -15,11 +15,23 @@ int get_and_validate_args(int argc, char **argv, monitor_struct *monitor_p)
 
 static  int ft_is_numeric(char *str)
 {
-    while (*str)
+    int i;
+
+    i = 0;
+    while (str[i] && ((str[i] >= 9 && str[i] <= 13) || str[i] == 32))
+        i++;
+    while (str[i])
     {
-        if (*str < '0' || *str > '9')
-            return (1);
-        str++;
+        if (str[i] < '0' || str[i] > '9')
+        {
+            if (str[i] != '-' && str[i] != '+')
+                return (1);
+            else if ((--i) >= 0 && !((str[i] >= 9 && str[i] <= 13) || str[i] == 32))
+                return (1);
+            else
+                i++;
+        }
+        i++;
     }
     return (0);
 }
@@ -36,17 +48,12 @@ static int get_args(config_struct *config_p, char **argv)
         return (1);
     }
     config_p->number_of_coders = atoi(argv[1]);
-    if (config_p->number_of_coders == 1)
-    {
-        fprintf(stderr, "Args error: number of coders should be grater than 1\n");
-        return (2);
-    }
     config_p->time_to_burnout = atoi(argv[2]);
     config_p->time_to_compile = atoi(argv[3]);
     config_p->time_to_debug = atoi(argv[4]);
     config_p->time_to_refactor = atoi(argv[5]);
-    config_p->dongle_cooldown = atoi(argv[6]);
-    config_p->compiles_required = atoi(argv[7]);
+    config_p->compiles_required = atoi(argv[6]);
+    config_p->dongle_cooldown = atoi(argv[7]);
     
     return (0);
 }
@@ -56,23 +63,23 @@ static int  validate_args(int argc, char **argv)
     int i;
 
     if (argc < 9)
-    {
-        fprintf(stderr, "Args error: insufficient arguments\n");
-        return (1);
-    }
+        return (fprintf(stderr, "Args error: insufficient arguments\n"), 1);
     i = 1;
     while (i <= 7)
     {
         if (ft_is_numeric(argv[i]))
+            return (fprintf(stderr, "Args error: arg [%i] is not a valid number\n", i), 2);
+        if (overflow_check(argv[i]))
+            return (fprintf(stderr, "Args error: arg [%i] overflowed\n", i), 3);
+        if (i == 7)
         {
-            fprintf(stderr, "Args error: arg is not all numeric\n");
-            return (2);
+            if (atoi(argv[i++]) < 0)
+                return (fprintf(stderr ,"Args error: cooldown must not be negative\n"), 4);
+            else
+                continue ;
         }
-        if (atoi(argv[i]) == 0)
-        {
-            fprintf(stderr, "Args error: all number args should be greater than zero\n");
-            return (3);
-        }
+        if (atoi(argv[i]) <= 0)
+            return (fprintf(stderr, "Args error: arg [%i] is <= 0\n", i), 4);
         i++;
     }
     return (0);

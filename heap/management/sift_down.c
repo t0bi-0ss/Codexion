@@ -12,9 +12,9 @@ void    sift_down(queue_struct *p_queue, int index)
     {
         child = 2 * index;
         if (child + 1 <= p_queue->size &&
-            p_queue->cmp_f(req_ptr[child + 1], req_ptr[child])) // check if sibling is lesser
+            p_queue->cmp_f(req_ptr[child + 1], req_ptr[child]))
             child++;
-        if (p_queue->cmp_f(req_ptr[child], req_ptr[index])) // check if child is lesser than parent
+        if (p_queue->cmp_f(req_ptr[child], req_ptr[index]))
         {
             swap(&req_ptr[index], &req_ptr[child]);
             index = child;

@@ -3,7 +3,7 @@
 static struct timespec  earliest_cd(dongle_struct *dongles_arr, int num);
 static struct timespec earliest_brnt(monitor_struct *monitor_p);
 
-// Modifies earliest_dead_line monitor's property comparing all burnouts and cooldowns
+/* Modifies earliest_dead_line monitor's property comparing all burnouts and cooldowns */
 void  earliest_dead_line(monitor_struct *monitor_ptr)
 {
     struct timespec early_brnt;
@@ -21,7 +21,7 @@ void  earliest_dead_line(monitor_struct *monitor_ptr)
     }
 }
 
-// Returns earliest brnt found among requests array
+/* Returns earliest brnt found among requests array */
 static struct timespec earliest_brnt(monitor_struct *monitor_p)
 {
     int i;
@@ -50,7 +50,7 @@ static struct timespec earliest_brnt(monitor_struct *monitor_p)
     return (earliest_brnt_found);
 }
 
-// Returns earliest cd found among dongles array
+/* Returns earliest cd found among dongles array */
 static struct timespec  earliest_cd(dongle_struct *dongles_arr, int num)
 {
     int i;

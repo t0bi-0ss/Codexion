@@ -10,13 +10,13 @@ int check_compilations_num(monitor_struct *monitor_ptr, int *curr_index)
         curr_req_coder->stop = 1;
         pop_at(monitor_ptr->min_heap, *curr_index);
         monitor_ptr->have_finished++;
-        pthread_cond_signal(&curr_req_coder->wake_coder);
+        pthread_cond_broadcast(&curr_req_coder->wake_coder);
         return (1);
     }
     return (0);
 }
 
-// Returns 1 if burnout is detected
+/* Returns 1 if burnout is detected */
 int burnout_check(monitor_struct *monitor_p)
 {
     int id;

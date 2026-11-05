@@ -13,7 +13,7 @@ void *coder_routine(void *properties)
         pthread_mutex_lock(&coder_p->monitor_ptr->shared_mutex);
         add_request(coder_p);
         coder_p->has_permission = 0;
-        pthread_cond_signal(&coder_p->monitor_ptr->wake_monitor);
+        pthread_cond_broadcast(&coder_p->monitor_ptr->wake_monitor);
         while (!coder_p->has_permission && !coder_p->stop)
             pthread_cond_wait(&coder_p->wake_coder, &coder_p->monitor_ptr->shared_mutex);
         pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
@@ -21,7 +21,6 @@ void *coder_routine(void *properties)
             break;
         if (coder_compilation(coder_p))
             break;
-        pthread_cond_signal(&coder_p->monitor_ptr->wake_monitor);
         if (coder_action(coder_p, DEBUG))
             break;
         if (coder_action(coder_p, REFACTOR))
@@ -32,22 +31,29 @@ void *coder_routine(void *properties)
 
 static int    coder_compilation(coder_properties_struct *coder_p)
 {
+    pthread_mutex_lock(&coder_p->monitor_ptr->shared_mutex);
     if (coder_p->stop)
+    {
+        pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
         return (1);
+    }
+    pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
     log_and_sleep(coder_p, COMPILE);
     pthread_mutex_lock(&coder_p->monitor_ptr->shared_mutex);
     update_both_dongles(coder_p);
-    // coder_p->times_compiled++;
-    // update_time_to_burnout(coder_p->monitor_ptr->loaded_config.time_to_burnout, &coder_p->to_burnout);
-    // timespec_add_time(&coder_p->to_burnout, coder_p->monitor_ptr->loaded_config.time_to_burnout);
     pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
     return (0);
 }
 
 static int  coder_action(coder_properties_struct *coder_p, Coder_actions action)
 {
+    pthread_mutex_lock(&coder_p->monitor_ptr->shared_mutex);
     if (coder_p->stop)
+    {
+        pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
         return (1);
+    }
+    pthread_mutex_unlock(&coder_p->monitor_ptr->shared_mutex);
     log_and_sleep(coder_p, action);
     return (0);
 }

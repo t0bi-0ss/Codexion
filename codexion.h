@@ -13,6 +13,8 @@
 #ifndef CODEXION_H
 # define CODEXION_H
 
+#define _XOPEN_SOURCE 500
+
 #include <unistd.h>
 #include <pthread.h>
 #include <stddef.h>
@@ -22,7 +24,12 @@
 #include <string.h>
 #include <sys/time.h>
 
-// ENUMS
+/*CONSTANTS*/
+
+#define MAX_INT 2147483647
+#define MIN_INT -2147483648
+
+/*ENUMS*/
 typedef enum scheduler {
     FIFO, EDF
 } Scheduler;
@@ -31,7 +38,7 @@ typedef enum coder_actions {
     COMPILE, DEBUG, REFACTOR, GRAB
 } Coder_actions;
 
-// CUSTOM STRUCTS
+/*CUSTOM STRUCTS*/
 
 typedef struct monitor_struct monitor_struct;
 
@@ -76,6 +83,7 @@ typedef struct {
     int in_cd;
     struct timespec cooldown_end;
     struct timespec last_time_used;
+    struct timespec requesters_burnout;
 } dongle_struct;
 
 struct monitor_struct{
@@ -92,15 +100,16 @@ struct monitor_struct{
     pthread_cond_t  wake_monitor;
 };
 
-// ARGS HANDLING
+/*ARGS HANDLING*/
 
 int get_and_validate_args(int argc, char **argv, monitor_struct *monitor_p);
+int overflow_check(const char *nptr);
 
-// HEAP UTILS
+/*HEAP UTILS*/
 
 queue_struct    *init_heap(config_struct *loaded_config);
 
-// HEAP MANAGEMENT
+/*HEAP MANAGEMENT*/
 
 void    swap(queue_request *child_request, queue_request *parent_request);
 void    sift_up(queue_struct *p_queue, int index);
@@ -108,12 +117,12 @@ void    sift_down(queue_struct *p_queue, int index);
 void    push(queue_struct *p_queue, queue_request new_request);
 int    pop_at(queue_struct *p_queue, int index);
 
-// HEAP CMP FUNCTIONS
+/*HEAP CMP FUNCTIONS*/
 
 int cmp_timeof_request(queue_request first_req, queue_request second_req);
 int cmp_burnout(queue_request first_req, queue_request second_req);
 
-// TIME UTILS
+/*TIME UTILS*/
 
 struct timespec get_timestamp();
 int timespec_cmp(struct timespec *first_stamp, struct timespec *second_stamp);
@@ -121,13 +130,13 @@ void    timespec_add_time(struct timespec *time_stamp, long time_ms);
 long    time_until_now(struct timespec *time_stamp);
 long    time_from_now(struct timespec *dead_line);
 
-// ROUTINES
+/*ROUTINES*/
 
 void *coder_routine(void *properties);
 void    *monitor_routine(void *properties);
 
 
-// CODER UTILS
+/*CODER UTILS*/
 
 void    add_request(coder_properties_struct *coder_p);
 void    init_coder_p(coder_properties_struct *coder_p, monitor_struct *monitor_p, int i);
@@ -135,7 +144,7 @@ void update_time_to_burnout(long burnout_time, struct timespec *time_to_burnout)
 void    update_both_dongles(coder_properties_struct *coder_p);
 void    log_and_sleep(coder_properties_struct *coder_p, Coder_actions action);
 
-// MONITOR UTILS
+/*MONITOR UTILS*/
 
 int init_monitor(monitor_struct *monitor_ptr);
 int burnout_check(monitor_struct *monitor_p);
@@ -147,7 +156,7 @@ void    stop_wake_all(coder_properties_struct *coders_arr,
 int  handle_request(monitor_struct *monitor_p, queue_request *request, int *request_index);
 void  earliest_dead_line(monitor_struct *monitor_ptr);
 
-// GENERAL UTILS
+/*GENERAL UTILS*/
 void    free_all(monitor_struct *monitor_p);
 void    log_event(monitor_struct *monitor_ptr, char *event, int id);
 void    finish_simulation(monitor_struct *monitor_p);

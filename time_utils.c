@@ -11,7 +11,7 @@ struct timespec get_timestamp()
     return (updated);
 }
 
-// Returns 1 if first_stamp occurs sooner than second_stamp
+/*Returns 1 if first_stamp occurs sooner than second_stamp*/
 int timespec_cmp(struct timespec *first_stamp, struct timespec *second_stamp)
 {
     if (!second_stamp || second_stamp->tv_sec == 0)

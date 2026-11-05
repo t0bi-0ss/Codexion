@@ -1,12 +1,13 @@
 NAME = codexion
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -pthread -g
+CFLAGS = -Wall -Wextra -Werror -pthread -g -std=c89
 SRCS = args_utils.c \
 	finish_simulation.c \
 	free_all.c \
 	main.c \
 	startup_utils.c \
 	time_utils.c \
+	overflow_check.c \
 	heap/cmp_functions/cmp_burnout.c \
 	heap/cmp_functions/cmp_timeof_req.c \
 	heap/management/pop_at.c \

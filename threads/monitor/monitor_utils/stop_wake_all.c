@@ -12,7 +12,7 @@ void    stop_wake_all(coder_properties_struct *coders_arr,
         if (!coders_arr[i].stop)
         {
             coders_arr[i].stop = 1;
-            pthread_cond_signal(&coders_arr[i].wake_coder);
+            pthread_cond_broadcast(&coders_arr[i].wake_coder);
         }
         i++;
     }

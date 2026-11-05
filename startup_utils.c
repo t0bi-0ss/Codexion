@@ -76,6 +76,8 @@ static void init_dongles(monitor_struct *monitor_p)
         dongle_ptr->cooldown_end.tv_sec = 0;
         dongle_ptr->last_time_used.tv_nsec = 0;
         dongle_ptr->last_time_used.tv_sec = 0;
+        dongle_ptr->requesters_burnout.tv_nsec = 0;
+        dongle_ptr->requesters_burnout.tv_sec = 0;
         i++;
     }
 }

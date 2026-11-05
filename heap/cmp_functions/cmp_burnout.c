@@ -1,6 +1,6 @@
 #include "../../codexion.h"
 
-// Returns 1 if first_req coder's burnout is sooner than second_req coder's burnout
+/*Returns 1 if first_req coder's burnout is sooner than second_req coder's burnout*/
 int cmp_burnout(queue_request first_req, queue_request second_req)
 {
     struct timespec *first_brnout;

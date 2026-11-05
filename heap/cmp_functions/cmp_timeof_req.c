@@ -1,6 +1,6 @@
 #include "../../codexion.h"
 
-// Returns 1 if first_req 'timeof' occurs sooner than second_req 'timeof'
+/* Returns 1 if first_req 'timeof' occurs sooner than second_req 'timeof'*/
 int cmp_timeof_request(queue_request first_req, queue_request second_req)
 {
     struct timespec *first_timeof;
