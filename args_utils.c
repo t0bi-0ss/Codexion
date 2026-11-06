@@ -6,7 +6,7 @@
 /*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/06 18:18:24 by tsordo-o          #+#    #+#             */
-/*   Updated: 2026/11/06 19:09:34 by tsordo-o         ###   ########.fr       */
+/*   Updated: 2026/11/06 19:15:49 by tsordo-o         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	impossible_parameters(t_config_struct *loaded_config)
 	if (loaded_config->number_of_coders > 5000)
 	{
 		fprintf(stderr, "Args error:"
-			"number of coders can't be greater than 5000\n");
+			" number of coders can't be greater than 5000\n");
 		return (1);
 	}
 	if (loaded_config->time_to_compile
@@ -43,9 +43,9 @@ static int	impossible_parameters(t_config_struct *loaded_config)
 		> loaded_config->time_to_burnout)
 	{
 		fprintf(stderr, "Args error: the sum of <time_to_compile>"
-			"<time_to_debug>"
-			"<time_to_refactor> and <dongle_cooldown> can't be greater than"
-			"<time_to_burnout>");
+			" <time_to_debug>"
+			" <time_to_refactor> and <dongle_cooldown> can't be greater than"
+			" <time_to_burnout>");
 		return (2);
 	}
 	return (0);
