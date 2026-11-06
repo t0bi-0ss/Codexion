@@ -17,7 +17,7 @@ SRCS = args_utils.c \
 	heap/management/swap.c \
 	heap/utils/init_heap.c \
 	threads/coder/coder_routine.c \
-	threads/coder/coder_utils/add_request.c \
+	threads/coder/coder_utils/cod_utils.c \
 	threads/coder/coder_utils/init_coder_p.c \
 	threads/coder/coder_utils/log_and_sleep.c \
 	threads/coder/coder_utils/update_both_dongles.c \

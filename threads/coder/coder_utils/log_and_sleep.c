@@ -1,61 +1,74 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   log_and_sleep.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/06 18:17:48 by tsordo-o          #+#    #+#             */
+/*   Updated: 2026/11/06 18:45:57 by tsordo-o         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../codexion.h"
 
-static long time_since_start(struct timespec start_time);
-void    log_event(monitor_struct *monitor_ptr, char *event, int id);
-static void dongles_grab(monitor_struct *monitor_ptr, int id);
+static long	time_since_start(struct timespec start_time);
+void		log_event(t_monitor *monitor_ptr, char *event, int id);
+static void	dongles_grab(t_monitor *monitor_ptr, int id);
 
-void    log_and_sleep(coder_properties_struct *coder_p, Coder_actions action)
+void	log_and_sleep(t_cod_prts_struct *coder_p, t_Coder_actions action)
 {
-    char    *event;
-    unsigned int  sleep_time;
-    
-    event = NULL;
-    sleep_time = 0;
-    if (action == COMPILE)
-    {
-        event = "is compiling";
-        sleep_time = coder_p->monitor_ptr->loaded_config.time_to_compile * 1000;
-    }
-    else if (action == DEBUG)
-    {
-        event = "is debugging";
-        sleep_time = coder_p->monitor_ptr->loaded_config.time_to_debug * 1000;
-    }
-    else if (action == REFACTOR)
-    {
-        event = "is refactoring";
-        sleep_time = coder_p->monitor_ptr->loaded_config.time_to_refactor * 1000;
-    }
-    else if (action == GRAB)
-        return ((void) event, dongles_grab(coder_p->monitor_ptr, coder_p->id));
-    log_event(coder_p->monitor_ptr, event, coder_p->id);
-    usleep(sleep_time);
+	char			*event;
+	unsigned int	sleep_time;
+
+	event = NULL;
+	sleep_time = 0;
+	if (action == COMPILE)
+	{
+		event = "is compiling";
+		sleep_time = coder_p->monitor_ptr->loaded_config.time_to_compile * 1000;
+	}
+	else if (action == DEBUG)
+	{
+		event = "is debugging";
+		sleep_time = coder_p->monitor_ptr->loaded_config.time_to_debug * 1000;
+	}
+	else if (action == REFACTOR)
+	{
+		event = "is refactoring";
+		sleep_time = coder_p->monitor_ptr->loaded_config.time_to_refactor
+			* 1000;
+	}
+	else if (action == GRAB)
+		return ((void)event, dongles_grab(coder_p->monitor_ptr, coder_p->id));
+	log_event(coder_p->monitor_ptr, event, coder_p->id);
+	usleep(sleep_time);
 }
 
-static long time_since_start(struct timespec start_time)
+static long	time_since_start(struct timespec start_time)
 {
-    long    time_since_start;
-    struct timespec now;
-    
-    now = get_timestamp();
-    now.tv_nsec -= start_time.tv_nsec;
-    now.tv_sec -= start_time.tv_sec;
-    time_since_start = now.tv_nsec / 1000000 + now.tv_sec * 1000;
-    return (time_since_start);
+	long			time_since_start;
+	struct timespec	now;
+
+	now = get_timestamp();
+	now.tv_nsec -= start_time.tv_nsec;
+	now.tv_sec -= start_time.tv_sec;
+	time_since_start = now.tv_nsec / 1000000 + now.tv_sec * 1000;
+	return (time_since_start);
 }
 
-void    log_event(monitor_struct *monitor_ptr, char *event, int id)
+void	log_event(t_monitor *monitor_ptr, char *event, int id)
 {
-    long    start_time;
+	long	start_time;
 
-    pthread_mutex_lock(&monitor_ptr->mutex_stdout);
-    start_time = time_since_start(monitor_ptr->start_time);
-    printf("%ld %i %s\n", start_time, id, event);
-    pthread_mutex_unlock(&monitor_ptr->mutex_stdout);
+	pthread_mutex_lock(&monitor_ptr->mutex_stdout);
+	start_time = time_since_start(monitor_ptr->start_time);
+	printf("%ld %i %s\n", start_time, id, event);
+	pthread_mutex_unlock(&monitor_ptr->mutex_stdout);
 }
 
-static void dongles_grab(monitor_struct *monitor_ptr, int id)
+static void	dongles_grab(t_monitor *monitor_ptr, int id)
 {
-    log_event(monitor_ptr, "has taken a dongle", id);
-    log_event(monitor_ptr, "has taken a dongle", id);
+	log_event(monitor_ptr, "has taken a dongle", id);
+	log_event(monitor_ptr, "has taken a dongle", id);
 }

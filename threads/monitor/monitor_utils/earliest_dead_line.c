@@ -1,81 +1,96 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   earliest_dead_line.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/06 18:18:11 by tsordo-o          #+#    #+#             */
+/*   Updated: 2026/11/06 18:54:55 by tsordo-o         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../codexion.h"
 
-static struct timespec  earliest_cd(dongle_struct *dongles_arr, int num);
-static struct timespec earliest_brnt(monitor_struct *monitor_p);
+static struct timespec	earliest_cd(t_dongle_struct *dongles_arr, int num);
+static struct timespec	earliest_brnt(t_monitor *monitor_p);
 
-/* Modifies earliest_dead_line monitor's property comparing all burnouts and cooldowns */
-void  earliest_dead_line(monitor_struct *monitor_ptr)
+/* Modifies earliest_dead_line monitor's
+property comparing all burnouts and cooldowns */
+void	earliest_dead_line(t_monitor *monitor_ptr)
 {
-    struct timespec early_brnt;
-    struct timespec early_cd;
+	struct timespec	early_brnt;
+	struct timespec	early_cd;
 
-    early_brnt = earliest_brnt(monitor_ptr);
-    early_cd = earliest_cd(monitor_ptr->dongles_arr, monitor_ptr->loaded_config.number_of_coders);
-    if (early_cd.tv_sec != 0 && timespec_cmp(&early_cd, &early_brnt))
-    {
-        monitor_ptr->earliest_deadline = early_cd;
-    }
-    else
-    {
-        monitor_ptr->earliest_deadline = early_brnt;
-    }
+	early_brnt = earliest_brnt(monitor_ptr);
+	early_cd = earliest_cd(monitor_ptr->dongles_arr,
+			monitor_ptr->loaded_config.number_of_coders);
+	if (early_cd.tv_sec != 0 && timespec_cmp(&early_cd, &early_brnt))
+	{
+		monitor_ptr->earliest_deadline = early_cd;
+	}
+	else
+	{
+		monitor_ptr->earliest_deadline = early_brnt;
+	}
 }
 
 /* Returns earliest brnt found among requests array */
-static struct timespec earliest_brnt(monitor_struct *monitor_p)
+static struct timespec	earliest_brnt(t_monitor *monitor_p)
 {
-    int i;
-    int coders_num;
-    coder_properties_struct *coders_arr;
-    struct timespec now;
-    struct timespec earliest_brnt_found;
+	int						i;
+	int						coders_num;
+	t_cod_prts_struct		*coders_arr;
+	struct timespec			now;
+	struct timespec			earliest_brnt_found;
 
-    coders_num = monitor_p->loaded_config.number_of_coders;
-    coders_arr = monitor_p->coder_properties_arr;
-    earliest_brnt_found.tv_nsec = 0;
-    earliest_brnt_found.tv_sec = 0;
-    now = get_timestamp();
-    i = 0;
-    while (i < coders_num)
-    {
-        if (earliest_brnt_found.tv_sec == 0 && timespec_cmp(&coders_arr[i].to_burnout, &now))
-            earliest_brnt_found = coders_arr[i].to_burnout;
-        else
-            if (timespec_cmp(&coders_arr[i].to_burnout, &earliest_brnt_found) && timespec_cmp(&coders_arr[i].to_burnout, &now))
-                earliest_brnt_found = coders_arr[i].to_burnout;
-        i++;
-    }
-    if (timespec_cmp(&earliest_brnt_found, &now))
-        return (now);
-    return (earliest_brnt_found);
+	coders_num = monitor_p->loaded_config.number_of_coders;
+	coders_arr = monitor_p->coder_properties_arr;
+	earliest_brnt_found.tv_nsec = 0;
+	earliest_brnt_found.tv_sec = 0;
+	now = get_timestamp();
+	i = 0;
+	while (i < coders_num)
+	{
+		if (earliest_brnt_found.tv_sec == 0
+			&& timespec_cmp(&coders_arr[i].to_burnout, &now))
+			earliest_brnt_found = coders_arr[i].to_burnout;
+		else if (timespec_cmp(&coders_arr[i].to_burnout, &earliest_brnt_found)
+			&& timespec_cmp(&coders_arr[i].to_burnout, &now))
+			earliest_brnt_found = coders_arr[i].to_burnout;
+		i++;
+	}
+	if (timespec_cmp(&earliest_brnt_found, &now))
+		return (now);
+	return (earliest_brnt_found);
 }
 
 /* Returns earliest cd found among dongles array */
-static struct timespec  earliest_cd(dongle_struct *dongles_arr, int num)
+static struct timespec	earliest_cd(t_dongle_struct *dongles_arr, int num)
 {
-    int i;
-    struct timespec now;
-    struct timespec earliest_cd_found;
-    
-    i = 0;
-    now = get_timestamp();
-    earliest_cd_found.tv_nsec = 0;
-    earliest_cd_found.tv_sec = 0;
-    while (i < num)
-    {
-        if (dongles_arr[i].in_cd)
-        {
-            if (earliest_cd_found.tv_sec == 0
-                && timespec_cmp(&now, &dongles_arr[i].cooldown_end))
-                earliest_cd_found = dongles_arr[i].cooldown_end;
-            else
-                if (timespec_cmp(&dongles_arr[i].cooldown_end, &earliest_cd_found)
-                    && timespec_cmp(&now, &dongles_arr[i].cooldown_end))
-                    earliest_cd_found = dongles_arr[i].cooldown_end;
-        }
-        i++;
-    }
-    if (timespec_cmp(&earliest_cd_found, &now))
-        return (now);
-    return (earliest_cd_found);
+	int				i;
+	struct timespec	now;
+	struct timespec	earliest_cd_found;
+
+	i = 0;
+	now = get_timestamp();
+	earliest_cd_found.tv_nsec = 0;
+	earliest_cd_found.tv_sec = 0;
+	while (i < num)
+	{
+		if (dongles_arr[i].in_cd)
+		{
+			if (earliest_cd_found.tv_sec == 0 && timespec_cmp(&now,
+					&dongles_arr[i].cooldown_end))
+				earliest_cd_found = dongles_arr[i].cooldown_end;
+			else if (timespec_cmp(&dongles_arr[i].cooldown_end,
+					&earliest_cd_found) && timespec_cmp(&now,
+					&dongles_arr[i].cooldown_end))
+				earliest_cd_found = dongles_arr[i].cooldown_end;
+		}
+		i++;
+	}
+	if (timespec_cmp(&earliest_cd_found, &now))
+		return (now);
+	return (earliest_cd_found);
 }

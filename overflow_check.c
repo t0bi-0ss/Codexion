@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   overflow_check.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/06 18:18:42 by tsordo-o          #+#    #+#             */
+/*   Updated: 2026/11/06 18:18:44 by tsordo-o         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 static int	ft_isspace(unsigned char c);
@@ -5,24 +17,24 @@ static int	ft_issign(unsigned char c);
 
 int	overflow_check(const char *nptr)
 {
-	int	sign;
+	int		sign;
 	long	result;
 
 	sign = 1;
 	result = 0;
 	while (ft_isspace(*nptr))
 		nptr++;
-    while (ft_issign(*nptr))
-    {
-        if (sign == 1 && *nptr == '-')
-            sign = -1;
-        nptr++;
-    }
+	while (ft_issign(*nptr))
+	{
+		if (sign == 1 && *nptr == '-')
+			sign = -1;
+		nptr++;
+	}
 	while (*nptr >= '0' && *nptr <= '9')
 		result = result * 10 + (*nptr++ - '0');
-    if (result <= MIN_INT || result >= MAX_INT)
+	if (result <= MIN_INT || result >= MAX_INT)
 	{
-        return (1);
+		return (1);
 	}
 	return (0);
 }

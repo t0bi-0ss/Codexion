@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   swap.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tsordo-o <tsordo-o@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/06 18:17:24 by tsordo-o          #+#    #+#             */
+/*   Updated: 2026/11/06 18:41:21 by tsordo-o         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../codexion.h"
 
-void    swap(queue_request *req_1, queue_request *req_2)
+void	swap(t_queue_request *req_1, t_queue_request *req_2)
 {
-    queue_request    tmp;
+	t_queue_request	tmp;
 
-    tmp = *req_1;
-    *req_1 = *req_2;
-    *req_2 = tmp;
+	tmp = *req_1;
+	*req_1 = *req_2;
+	*req_2 = tmp;
 }
